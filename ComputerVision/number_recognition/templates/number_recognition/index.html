@@ -1,12 +1,29 @@
 {% load static %}
 
+
 <h1>Number recognition</h1>
 <canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
 <button onclick="clearCanvas()">Clear! :)</button>
-<button onclick="clearCanvas()">Clear! :)</button>
 
-<button onclick="clearCanvas()">Clear! :)</button>
+<form id="drawing_form" action="{% url 'number_recognition:send_drawing' %}" method="post">
+    {% csrf_token %}
+    <input type="text" id="number" name="typed_number">
+    <input type="hidden" id="canvas" name="canvas">
+    <input type="button" onclick='submitDrawingForm()' value="Send">
+</form>
 
 
 <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
+<script>
+
+    function submitDrawingForm() {
+        //save canvas as png encoded in base64 to canvas hidden input
+        document.getElementById("canvas").value = canvas.toDataURL();
+        document.getElementById("drawing_form").submit();
+    }
+
+</script>
+
+
+
 
