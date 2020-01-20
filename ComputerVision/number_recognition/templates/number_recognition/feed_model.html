@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed model</title>
+</head>
+<body>
+You can help train the model by submitting your own labeled examples.
+<li><a href="{% url 'number_recognition:index' %}">Go back 🏠</a></li>
+<br>
+<canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
+
+<form id="drawing_form" action="{% url 'number_recognition:send_drawing' %}" method="post">
+    {% csrf_token %}
+    <input type="text" id="number" name="typed_number">
+    <input type="hidden" id="canvas" name="canvas">
+    <input type="button" onclick='submitDrawingForm()' value="Send">
+</form>
+
+</body>
+</html>
+
+<script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
+<script>
+
+    function submitDrawingForm() {
+        //save canvas as png encoded in base64 to canvas hidden input
+        document.getElementById("canvas").value = canvas.toDataURL();
+        document.getElementById("drawing_form").submit();
+    }
+
+</script>
