@@ -26,7 +26,7 @@ You can help train the model by submitting your own labeled examples.
 <script>
 
     function submitDrawingForm() {
-        //save canvas as png encoded in base64 to canvas hidden input
+        //save canvas in png format encoded in base64
         document.getElementById("canvas").value = canvas.toDataURL();
         document.getElementById("drawing_form").submit();
     }

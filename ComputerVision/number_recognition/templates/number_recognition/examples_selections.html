@@ -1,0 +1,39 @@
+<canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
+<button onclick="nextDrawing()">next!</button>
+<p id="label_p"></p>
+<script>
+
+    var myCanvas = document.getElementById("myCanvas")
+    var label_p = document.getElementById("label_p")
+    var ctx = myCanvas.getContext('2d');
+    var img = new Image;
+    var drawings = [];
+    var amount = {{ examples.count }};
+    let counter = 0;
+    var current_index = 0;
+
+
+    {% for example in examples %}
+        drawings.push({"label": {{ example.label }}, "drawing_base64": "{{ example.drawing_base64 }}"});
+    {% endfor %}
+
+    img.src = drawings[counter]["drawing_base64"];
+    label_p.innerText = drawings[counter]["label"];
+    ctx.drawImage(img, 0, 0);
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+    }
+
+
+    function nextDrawing() {
+        clearCanvas()
+        ++counter;
+        current_index = counter % amount;
+        label_p.innerText = drawings[current_index]["label"];
+        img.src = drawings[current_index]["drawing_base64"];
+        ctx.drawImage(img, 0, 0);
+    }
+
+
+</script>
