@@ -1,39 +1,68 @@
 <canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
 <button onclick="nextDrawing()">next!</button>
 <p id="label_p"></p>
+
+<form id='handle_example_form' action="{% url 'number_recognition:handle_example' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="command" name="command">
+    <input type="hidden" id="drawing_id" name="drawing_id">
+    <input type="button" onclick='discardDrawing()' value="Discard">
+    <input type="button" onclick='acceptDrawing()' value="Accept">
+</form>
+
+<li><a href="{% url 'number_recognition:index' %}">Go back 🏠</a></li>
+
 <script>
 
-    var myCanvas = document.getElementById("myCanvas")
-    var label_p = document.getElementById("label_p")
-    var ctx = myCanvas.getContext('2d');
-    var img = new Image;
-    var drawings = [];
     var amount = {{ examples.count }};
-    let counter = 0;
-    var current_index = 0;
+
+    if (amount !== 0) {
+        var myCanvas = document.getElementById("myCanvas")
+        var label_p = document.getElementById("label_p")
+        var ctx = myCanvas.getContext('2d');
+        var img = new Image;
+        var drawings = [];
+        let counter = 0;
+        var current_index = 0;
 
 
-    {% for example in examples %}
-        drawings.push({"label": {{ example.label }}, "drawing_base64": "{{ example.drawing_base64 }}"});
-    {% endfor %}
+        {% for example in examples %}
+            drawings.push({
+                "label": {{ example.label }},
+                "drawing_base64": "{{ example.drawing_base64 }}",
+                "pk": {{ example.pk }}
+            });
+        {% endfor %}
 
-    img.src = drawings[counter]["drawing_base64"];
-    label_p.innerText = drawings[counter]["label"];
-    ctx.drawImage(img, 0, 0);
-
-    function clearCanvas() {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-    }
-
-
-    function nextDrawing() {
-        clearCanvas()
-        ++counter;
-        current_index = counter % amount;
-        label_p.innerText = drawings[current_index]["label"];
-        img.src = drawings[current_index]["drawing_base64"];
+        img.src = drawings[counter]["drawing_base64"];
+        label_p.innerText = drawings[counter]["label"];
         ctx.drawImage(img, 0, 0);
-    }
 
+        function clearCanvas() {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
+        }
+
+
+        function nextDrawing() {
+            clearCanvas()
+            ++counter;
+            current_index = counter % amount;
+            label_p.innerText = drawings[current_index]["label"];
+            img.src = drawings[current_index]["drawing_base64"];
+            ctx.drawImage(img, 0, 0);
+        }
+
+        function discardDrawing() {
+            document.getElementById('command').value = 'discard';
+            document.getElementById('drawing_id').value = drawings[current_index].pk;
+            document.getElementById("handle_example_form").submit();
+        }
+
+        function acceptDrawing() {
+            document.getElementById('command').value = 'accept';
+            document.getElementById('drawing_id').value = drawings[current_index].pk;
+            document.getElementById("handle_example_form").submit();
+        }
+    }
 
 </script>

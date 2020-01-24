@@ -21,14 +21,6 @@ def feed_model(request):
 
 
 def send_drawing(request):
-    image_b64 = request.POST['canvas']
-    # with io.StringIO(image_b64) as f:
-    #     print(f.read(100))
-    imgstr = re.search(r'base64,(.*)', image_b64).group(1)
-    image_bytes = io.BytesIO(base64.b64decode(imgstr))
-    im = Image.open(image_bytes)
-    arr = np.array(im)[:, :, 0]
-
     example = User_Example(drawing_base64=request.POST['canvas'], label=request.POST['typed_number'])
     example.save()
     return HttpResponseRedirect(reverse('number_recognition:feed_model'))
@@ -36,5 +28,52 @@ def send_drawing(request):
 
 def examples_selection(request):
     examples = User_Example.objects.all()
-
     return render(request, 'number_recognition/examples_selections.html', context={"examples": examples})
+
+
+def accept_example(drawing_id):
+    try:
+        example_to_accept = User_Example.objects.get(pk=drawing_id)
+    except (KeyError, User_Example.DoesNotExist):
+        return
+    else:
+        image_b64 = example_to_accept.drawing_base64
+        imgstr = re.search(r'base64,(.*)', image_b64).group(1)
+        image_bytes = io.BytesIO(base64.b64decode(imgstr))
+        im = Image.open(image_bytes)
+        arr = np.array(im)[:, :, 0]
+
+        # Scaling to 20x20 image
+        coordinates = np.round(np.linspace(0, 199, 20))
+        scaled_image_samples = []
+
+        # we lay a grid 20x20 on origin image to get samples (pixels where the grid intersects)
+        for x in coordinates.astype(int):
+            for y in coordinates.astype(int):
+                scaled_image_samples.append(arr[x, y])
+
+        scaled_image = np.array(scaled_image_samples).reshape(20, 20)
+
+        example_to_accept.delete()
+
+        print('accept')
+
+
+def discard_example(drawing_id):
+    print('discard')
+    try:
+        example_to_delete = User_Example.objects.get(pk=drawing_id)
+    except (KeyError, User_Example.DoesNotExist):
+        return
+    else:
+        example_to_delete.delete()
+
+
+def handle_example(request):
+    drawing_id = request.POST['drawing_id']
+    command = request.POST['command']
+    if command == 'accept':
+        accept_example(drawing_id)
+    if command == 'discard':
+        discard_example(drawing_id)
+    return HttpResponseRedirect(reverse('number_recognition:examples_selection'))

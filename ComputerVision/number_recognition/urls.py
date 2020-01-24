@@ -9,4 +9,6 @@ urlpatterns = [
     path('feed_model', views.feed_model, name='feed_model'),
     path('send_drawing', views.send_drawing, name='send_drawing'),
     path('examples_selection', views.examples_selection, name='examples_selection'),
+    path('handle_example', views.handle_example, name='handle_example'),
+
 ]
