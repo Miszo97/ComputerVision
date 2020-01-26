@@ -4,6 +4,9 @@ from PIL import Image
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+import sqlite3
+import pickle
+import pandas as pd
 import numpy as np
 import io
 import re
@@ -38,6 +41,7 @@ def accept_example(drawing_id):
         return
     else:
         image_b64 = example_to_accept.drawing_base64
+        label = example_to_accept.label
         imgstr = re.search(r'base64,(.*)', image_b64).group(1)
         image_bytes = io.BytesIO(base64.b64decode(imgstr))
         im = Image.open(image_bytes)
@@ -53,6 +57,12 @@ def accept_example(drawing_id):
                 scaled_image_samples.append(arr[x, y])
 
         scaled_image = np.array(scaled_image_samples).reshape(20, 20)
+
+        df = pd.DataFrame({'data': [pickle.dumps(scaled_image)], 'label': [label], 'base_64': [image_b64]})
+
+        conn = sqlite3.connect('DataSet.db')
+        df.to_sql('DataSet', conn, if_exists='append', index=False)
+        conn.close()
 
         example_to_accept.delete()
 
