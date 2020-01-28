@@ -18,7 +18,7 @@ function redraw() {
 
     context.strokeStyle = "#df4b26";
     context.lineJoin = "round";
-    context.lineWidth = 5;
+    context.lineWidth = 8;
 
     for (var i = 0; i < clickX.length; i++) {
 
