@@ -47,16 +47,7 @@ def accept_example(drawing_id):
         im = Image.open(image_bytes)
         arr = np.array(im)[:, :, 0]
 
-        # Scaling to 20x20 image
-        coordinates = np.round(np.linspace(0, 199, 20))
-        scaled_image_samples = []
-
-        # we lay a grid 20x20 on origin image to get samples (pixels where the grid intersects)
-        for x in coordinates.astype(int):
-            for y in coordinates.astype(int):
-                scaled_image_samples.append(arr[x, y])
-
-        scaled_image = np.array(scaled_image_samples).reshape(20, 20)
+        scaled_image = np.array(Image.fromarray(arr).resize((20, 20)))
 
         df = pd.DataFrame({'data': [pickle.dumps(scaled_image)], 'label': [label], 'base_64': [image_b64]})
 
