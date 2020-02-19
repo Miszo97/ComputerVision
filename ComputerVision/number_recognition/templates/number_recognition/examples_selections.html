@@ -1,69 +1,74 @@
-<canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
-<button onclick="nextDrawing()">next!</button>
-<p id="label_p"></p>
+{% load static %}
 
-<form id='handle_example_form' action="{% url 'number_recognition:handle_example' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" id="command" name="command">
-    <input type="hidden" id="drawing_id" name="drawing_id">
-    <input type="button" onclick='discardDrawing()' value="Discard">
-    <input type="button" onclick='acceptDrawing()' value="Accept">
-</form>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="{% static 'number_recognition/examples_selection_styles.css' %}" rel="stylesheet">
+    <form id='send_examples_form' action="{% url 'number_recognition:update_examples' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="deleted_user_examples" name="deleted_examples">
+        <input type="button" id="Update examples" value="Update!" onclick="updateExamples()">
+    </form>
+    </form>
+</head>
+<body>
 
-<li><a href="{% url 'number_recognition:index' %}">Go back 🏠</a></li>
-<li><a href="{% url 'number_recognition:examples_selection' %}">ex sel</a></li>
 
+<div id="Container">
+    <div id="UserExamplesGallery">
+
+    </div>
+</div>
+
+
+</body>
+</html>
+
+<script src="{% static 'number_recognition/examples_selection_scripts.js' %}"></script>
 <script>
-
-    var amount = {{ examples.count }};
-
-    if (amount !== 0) {
-        var myCanvas = document.getElementById("myCanvas")
-        var label_p = document.getElementById("label_p")
-        var ctx = myCanvas.getContext('2d');
-        var img = new Image;
-        var drawings = [];
-        var counter = 0;
-        var current_index = 0;
+    let userExamplesGallery, div, label, img, discardButton, exampleCanvas, pk, id, deletedExamples = [];
 
 
-        {% for example in examples %}
-            drawings.push({
-                "label": {{ example.label }},
-                "drawing_base64": "{{ example.drawing_base64 }}",
-                "pk": {{ example.pk }}
-            });
-        {% endfor %}
+    {% for example in examples %}
 
-        img.src = drawings[counter]["drawing_base64"];
-        label_p.innerText = drawings[counter]["label"];
-        ctx.drawImage(img, 0, 0);
+        {{ example.label }}
 
-        function clearCanvas() {
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clears the canvas
-        }
+        userExamplesGallery = document.getElementById('UserExamplesGallery');
+
+        div = document.createElement('div');
+        div.id = 'UserExampleInstance_' + {{example.pk}};
+        div.className = 'UserExampleInstance';
+
+        discardButton = document.createElement('button');
+        discardButton.innerText = 'Discard!';
+        discardButton.onclick = () => {
+            pk = {{example.pk}};
+            id = 'UserExampleInstance_' + pk;
+            userExamplesGallery.removeChild(document.getElementById(id));
+            deletedExamples.push(pk);
+        };
+
+        exampleCanvas = document.createElement('canvas');
 
 
-        function nextDrawing() {
-            clearCanvas()
-            ++counter;
-            current_index = counter % amount;
-            label_p.innerText = drawings[current_index]["label"];
-            img.src = drawings[current_index]["drawing_base64"];
-            ctx.drawImage(img, 0, 0);
-        }
+        exampleCanvas.style.border = '1px solid blue';
+        exampleCanvas.width = 200;
+        exampleCanvas.height = 200;
+        img = new Image;
 
-        function discardDrawing() {
-            document.getElementById('command').value = 'discard';
-            document.getElementById('drawing_id').value = drawings[current_index].pk;
-            document.getElementById("handle_example_form").submit();
-        }
+        img.src = '{{ example.drawing_base64 }}'
 
-        function acceptDrawing() {
-            document.getElementById('command').value = 'accept';
-            document.getElementById('drawing_id').value = drawings[current_index].pk;
-            document.getElementById("handle_example_form").submit();
-        }
-    }
+        exampleCanvas.getContext('2d').drawImage(img, 0, 0);
 
+        label = document.createElement('p');
+        label.innerText = {{ example.label }};
+
+        div.appendChild(exampleCanvas);
+        div.appendChild(label);
+        div.appendChild(discardButton);
+        userExamplesGallery.appendChild(div);
+
+    {% endfor %}
 </script>

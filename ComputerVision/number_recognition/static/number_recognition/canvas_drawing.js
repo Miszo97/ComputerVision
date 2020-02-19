@@ -1,4 +1,4 @@
-canvas = document.getElementById('myCanvas');
+canvas = document.getElementById('UserExampleCreatorCanvas');
 context = canvas.getContext("2d");
 
 clickX = [];

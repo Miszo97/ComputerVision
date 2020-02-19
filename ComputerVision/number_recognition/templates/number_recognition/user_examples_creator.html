@@ -1,0 +1,50 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="{% static 'number_recognition/user_examples_creator_styles.css' %}" rel="stylesheet">
+    <form id='send_examples_form' action="{% url 'number_recognition:send_drawings' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="user_examples" name="examples">
+    </form>
+    </form>
+</head>
+<body>
+
+<div id="Container">
+    <div id="UserExamplesCreatorSpace">
+        <div id="UserExamplesCreator">
+            <canvas id='UserExampleCreatorCanvas' width="200" height="200" style="border:1px solid #000000;"></canvas>
+            <script src="{% static 'number_recognition/user_examples_creator_scripts.js' %}"></script>
+            <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
+            <button id="accept_button" onclick="addToGallery()">Accept</button>
+            <button id="clear_button" onclick="clearCanvas()">Clear</button>
+            <button id="send_all_button" onclick="sendUserExamplesFromGallery()">SendAll</button>
+            <label for="numbers_choice">Choose a number:</label>
+
+            <select id="numbers_choice">
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5>5</option>
+                <option value=6>6</option>
+                <option value=7>7</option>
+                <option value=8>8</option>
+                <option value=9>9</option>
+            </select>
+        </div>
+    </div>
+    <div id="UserExamplesGallery">
+    </div>
+</div>
+</div>
+
+</body>
+</html>
+
+<script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
+

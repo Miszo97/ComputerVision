@@ -7,8 +7,8 @@ app_name = 'number_recognition'
 urlpatterns = [
     path('', views.index, name='index'),
     path('feed_model', views.feed_model, name='feed_model'),
-    path('send_drawing', views.send_drawing, name='send_drawing'),
+    path('send_drawing', views.send_drawings, name='send_drawings'),
     path('examples_selection', views.examples_selection, name='examples_selection'),
-    path('handle_example', views.handle_example, name='handle_example'),
+    path('update_examples', views.update_examples, name='update_examples'),
 
 ]

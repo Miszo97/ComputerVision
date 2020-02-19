@@ -2,7 +2,7 @@
 
 from PIL import Image
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 import sqlite3
 import pickle
@@ -11,6 +11,7 @@ import numpy as np
 import io
 import re
 import base64
+import json
 
 from .models import User_Example
 
@@ -20,12 +21,13 @@ def index(request):
 
 
 def feed_model(request):
-    return render(request, 'number_recognition/feed_model.html')
+    return render(request, 'number_recognition/user_examples_creator.html')
 
 
-def send_drawing(request):
-    example = User_Example(drawing_base64=request.POST['canvas'], label=request.POST['typed_number'])
-    example.save()
+def send_drawings(request):
+    examples = json.loads(request.POST['examples'])
+    examples_model = [User_Example(drawing_base64=e['dataURL'], label=e['label']) for e in examples]
+    User_Example.objects.bulk_create(examples_model)
     return HttpResponseRedirect(reverse('number_recognition:feed_model'))
 
 
@@ -34,47 +36,48 @@ def examples_selection(request):
     return render(request, 'number_recognition/examples_selections.html', context={"examples": examples})
 
 
-def accept_example(drawing_id):
+def update_examples(request):
+    examples_to_delete_pks = json.loads(request.POST['deleted_examples'])
     try:
-        example_to_accept = User_Example.objects.get(pk=drawing_id)
+        user_examples = User_Example.objects.all()
+        examples_to_accept = [e for e in user_examples if e.id not in examples_to_delete_pks]
+        User_Example.objects.all().delete()
     except (KeyError, User_Example.DoesNotExist):
         return
     else:
-        image_b64 = example_to_accept.drawing_base64
-        label = example_to_accept.label
-        imgstr = re.search(r'base64,(.*)', image_b64).group(1)
-        image_bytes = io.BytesIO(base64.b64decode(imgstr))
-        im = Image.open(image_bytes)
-        arr = np.array(im)[:, :, 0]
+        if len(examples_to_accept) != 0:
+            conn = sqlite3.connect('DataSet.db')
+            for e in examples_to_accept:
+                # Convert image to to the format the classifier is expecting.
+                norm_image = convertImage(e)
 
-        scaled_image = np.array(Image.fromarray(arr).resize((20, 20)))
+                # Save the example in a table format ready to be stored in a database.
+                df = pd.DataFrame(
+                    {'data': [pickle.dumps(norm_image)], 'label': [e.label], 'base_64': [e.drawing_base64]})
 
-        df = pd.DataFrame({'data': [pickle.dumps(scaled_image)], 'label': [label], 'base_64': [image_b64]})
+                df.to_sql('DataSet', conn, if_exists='append', index=False)
 
-        conn = sqlite3.connect('DataSet.db')
-        df.to_sql('DataSet', conn, if_exists='append', index=False)
-        conn.close()
+            conn.close()
 
-        example_to_accept.delete()
-
-        print('accept')
-
-
-def discard_example(drawing_id):
-    print('discard')
-    try:
-        example_to_delete = User_Example.objects.get(pk=drawing_id)
-    except (KeyError, User_Example.DoesNotExist):
-        return
-    else:
-        example_to_delete.delete()
-
-
-def handle_example(request):
-    drawing_id = request.POST['drawing_id']
-    command = request.POST['command']
-    if command == 'accept':
-        accept_example(drawing_id)
-    if command == 'discard':
-        discard_example(drawing_id)
     return HttpResponseRedirect(reverse('number_recognition:examples_selection'))
+
+
+def convertImage(e):
+    """
+    Convert image to to the format the classifier is expecting.
+    Specifically 20x20 matrix with values in range 0 to 1.
+    """
+
+    image_b64 = e.drawing_base64
+    imgstr = re.search(r'base64,(.*)', image_b64).group(1)
+    image_bytes = io.BytesIO(base64.b64decode(imgstr))
+    im = Image.open(image_bytes)
+    arr = np.array(im)[:, :, 0]
+    scaled_image = np.array(Image.fromarray(arr).resize((20, 20)))
+    # normalization
+    min_element = np.min(scaled_image)
+    max_element = np.max(scaled_image)
+    delta = max_element - min_element
+    norm_image = (scaled_image - min_element) / delta
+
+    return norm_image
