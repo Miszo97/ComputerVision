@@ -25,7 +25,7 @@ SECRET_KEY = '^&9$$-79k8e-qum8q66j_^kq)&48@7*efs8jcms$y+ivg!gw(k'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'number_recognition.apps.NumberRecognitionConfig',
     'django.contrib.admin',
+    'django_extensions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
