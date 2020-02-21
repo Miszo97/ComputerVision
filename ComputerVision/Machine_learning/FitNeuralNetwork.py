@@ -7,10 +7,9 @@ def gradient_descent(Theta1, Theta2, Theta1_grad, Theta2_grad, alpha):
     return Theta1, Theta2
 
 
-def fit(Theta1, Theta2, X, y, iteration_number=50, l=4):
+def fit(Theta1, Theta2, X, y, iteration_number=50, l=4, alpha=0.01):
     "Optimize neural network parameters to find minimum of cost function"
 
-    alpha = 0.01
     costs = []  # cost on each iteration
 
     for i in range(iteration_number):

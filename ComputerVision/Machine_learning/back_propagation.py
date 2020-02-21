@@ -11,7 +11,6 @@ def nnCostFunction(Theta1, Theta2, X, y, l):
     nl = Theta2.shape[0]  # number of labels
     a1 = X
     a1 = addOneColumn(a1)  # add bias term
-    at = np.zeros(6).reshape(2, 3)
 
     z2 = Theta1.dot(a1.T)
     a2 = sigmoid(z2)
