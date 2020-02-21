@@ -4,20 +4,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Examples selection page</title>
     <link href="{% static 'number_recognition/examples_selection_styles.css' %}" rel="stylesheet">
-    <form id='send_examples_form' action="{% url 'number_recognition:update_examples' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" id="deleted_user_examples" name="deleted_examples">
-        <input type="button" id="Update examples" value="Update!" onclick="updateExamples()">
-    </form>
-    </form>
 </head>
 <body>
 
+<form id='deleted-examples-form' action="{% url 'number_recognition:update_examples' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="deleted-examples" name="deleted-examples">
+    <input type="button" id="update-examples-button" value="Update!" onclick="updateExamples()">
+</form>
 
 <div id="Container">
-    <div id="UserExamplesGallery">
+    <div id="user-examples-gallery">
 
     </div>
 </div>
@@ -35,17 +34,17 @@
 
         {{ example.label }}
 
-        userExamplesGallery = document.getElementById('UserExamplesGallery');
+        userExamplesGallery = document.getElementById('user-examples-gallery');
 
         div = document.createElement('div');
-        div.id = 'UserExampleInstance_' + {{example.pk}};
-        div.className = 'UserExampleInstance';
+        div.id = 'user-example-instance_' + {{example.pk}};
+        div.className = 'user-example-instance';
 
         discardButton = document.createElement('button');
         discardButton.innerText = 'Discard!';
         discardButton.onclick = () => {
             pk = {{example.pk}};
-            id = 'UserExampleInstance_' + pk;
+            id = 'user-example-instance_' + pk;
             userExamplesGallery.removeChild(document.getElementById(id));
             deletedExamples.push(pk);
         };

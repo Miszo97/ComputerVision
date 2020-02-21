@@ -1,9 +1,12 @@
+"use strict";
+
+
 let addedExamplesNumberTotal = 0;
 
 function addToGallery() {
     addedExamplesNumberTotal++;
 
-    const userExampleCreatorCanvas = document.getElementById('UserExampleCreatorCanvas');
+    const userExampleCreatorCanvas = document.getElementById('user-example-creator-canvas');
     const userExampleCreatorCanvasArray = userExampleCreatorCanvas.getContext('2d').getImageData(0, 0, 200, 200).data;
 
     // checks whether an element is not zero
@@ -12,19 +15,19 @@ function addToGallery() {
     // Add the new example only if the user drew something.
     if (userExampleCreatorCanvasArray.some(isNonZero)) {
 
-        let gallery = document.getElementById("UserExamplesGallery");
+        let gallery = document.getElementById("user-examples-gallery");
         let canvasCopy = document.createElement('canvas');
 
         let div = document.createElement('div');
-        div.id = 'UserExampleInstance_' + addedExamplesNumberTotal;
-        div.className = 'UserExampleInstance';
+        div.id = 'user-example-instance_' + addedExamplesNumberTotal;
+        div.className = 'user-example-instance';
 
 
         let discardButton = document.createElement('button');
         discardButton.innerText = 'Discrad!';
         let addedExamplesNumberTotal_copy = addedExamplesNumberTotal;
         discardButton.onclick = () => {
-            gallery.removeChild(document.getElementById('UserExampleInstance_' + addedExamplesNumberTotal_copy))
+            gallery.removeChild(document.getElementById('user-example-instance_' + addedExamplesNumberTotal_copy))
         };
 
 
@@ -49,11 +52,13 @@ function addToGallery() {
 document.addEventListener('keydown', (event) => {
     const keyName = event.key;
 
-    if (keyName === 'a') {
-        // do not alert when only Control key is pressed.
-        console.log(`Key pressed ${keyName}`);
-        addToGallery();
-        return;
+    switch (keyName) {
+        case 'a': // do not alert when only Control key is pressed.
+            addToGallery();
+            break;
+        case 'c':
+            clearCanvas();
+            break;
     }
 
 }, false);
@@ -63,7 +68,7 @@ function clearCanvas() {
 }
 
 function getUserExamplesFromGallery() {
-    const userExamplesGallery = document.getElementById("UserExamplesGallery").children
+    const userExamplesGallery = document.getElementById("user-examples-gallery").children
     let userExamples = [];
     for (const userExamplesGalleryElement of userExamplesGallery) {
         const divContent = userExamplesGalleryElement.children;
@@ -75,9 +80,9 @@ function getUserExamplesFromGallery() {
 function sendUserExamplesFromGallery() {
     let userExamplesFromGalleryJson = getUserExamplesFromGallery();
     let userExamplesFromGallery = JSON.stringify(userExamplesFromGalleryJson);
-    let sendExamplesForm = document.getElementById('send_examples_form');
-    let userExamplesInput = document.getElementById('user_examples');
+    let newExamplesForm = document.getElementById('new-examples-form');
+    let userExamplesInput = document.getElementById('user-examples');
 
     userExamplesInput.value = userExamplesFromGallery;
-    sendExamplesForm.submit();
+    newExamplesForm.submit();
 }

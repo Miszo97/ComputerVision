@@ -37,7 +37,7 @@ def examples_selection(request):
 
 
 def update_examples(request):
-    examples_to_delete_pks = json.loads(request.POST['deleted_examples'])
+    examples_to_delete_pks = json.loads(request.POST['deleted-examples'])
     try:
         user_examples = User_Example.objects.all()
         examples_to_accept = [e for e in user_examples if e.id not in examples_to_delete_pks]

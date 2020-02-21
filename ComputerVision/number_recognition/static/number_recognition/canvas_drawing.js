@@ -1,9 +1,11 @@
-canvas = document.getElementById('UserExampleCreatorCanvas');
-context = canvas.getContext("2d");
+"use strict";
 
-clickX = [];
-clickY = [];
-clickDrag = [];
+let canvas = document.getElementById('user-example-creator-canvas');
+let context = canvas.getContext("2d");
+
+let clickX = [];
+let clickY = [];
+let clickDrag = [];
 let paint;
 
 function addClick(x, y, dragging) {

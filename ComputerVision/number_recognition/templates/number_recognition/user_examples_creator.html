@@ -6,18 +6,20 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <link href="{% static 'number_recognition/user_examples_creator_styles.css' %}" rel="stylesheet">
-    <form id='send_examples_form' action="{% url 'number_recognition:send_drawings' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" id="user_examples" name="examples">
-    </form>
-    </form>
 </head>
 <body>
 
 <div id="Container">
-    <div id="UserExamplesCreatorSpace">
-        <div id="UserExamplesCreator">
-            <canvas id='UserExampleCreatorCanvas' width="200" height="200" style="border:1px solid #000000;"></canvas>
+    <div id="user-examples-creator-space">
+        <form id='new-examples-form' action="{% url 'number_recognition:send_drawings' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="user-examples" name="examples">
+        </form>
+        <p>Click "a" to append new example.</p>
+        <p>Click "c" to clear the canvas.</p>
+        <div id="user-examples-creatorF">
+            <canvas id='user-example-creator-canvas' width="200" height="200"
+                    style="border:1px solid #000000;"></canvas>
             <script src="{% static 'number_recognition/user_examples_creator_scripts.js' %}"></script>
             <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
             <button id="accept_button" onclick="addToGallery()">Accept</button>
@@ -38,13 +40,12 @@
             </select>
         </div>
     </div>
-    <div id="UserExamplesGallery">
+    <div id="user-examples-gallery">
     </div>
 </div>
-</div>
+
 
 </body>
 </html>
 
-<script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
 

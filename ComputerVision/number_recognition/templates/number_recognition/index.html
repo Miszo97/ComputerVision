@@ -1,10 +1,20 @@
 {% load static %}
-
-
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Index document</title>
+</head>
+<body>
 <h1>Number recognition</h1>
 <li><a href="{% url 'number_recognition:feed_model' %}">Feed model! 🍏</a></li>
 <canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
 <button onclick="clearCanvas()">Clear! :)</button>
+</body>
+</html>
 
 
 <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>

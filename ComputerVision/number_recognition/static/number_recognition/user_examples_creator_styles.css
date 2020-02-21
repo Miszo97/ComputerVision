@@ -1,20 +1,20 @@
-#UserExamplesCreator {
+#user-examples-creator {
     margin: auto;
 }
 
-#UserExamplesCreatorSpace {
+#user-examples-creator-space {
     text-align: center;
     margin-bottom: 200px;
     padding: 40px;
 }
 
-#UserExamplesGallery {
+#user-examples-gallery {
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
 }
 
-.UserExampleInstance {
+.user-example-instance {
     border: 1px solid;
     padding: 20px;
     font-size: 30px;
