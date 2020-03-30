@@ -31,7 +31,7 @@ def nnCostFunction(Theta1, Theta2, X, y, l):
     exp2 = np.multiply(np.log(1 - predictions), (1 - Y))
 
     reg = (l / (2 * m)) * (sum(sum(Theta1[:, 1:] ** 2)) + sum(sum(Theta2[:, 1:] ** 2)))
-    J = (1 / m) * np.sum(-exp1 - exp2) + reg;
+    J = (1 / m) * np.sum(-exp1 - exp2) + reg
 
     delta_3 = a3.T - Y
     delta_2 = delta_3.dot(Theta2[:, 1:])

@@ -1,5 +1,5 @@
 import numpy as np
-from Machine_learning.back_propagation import nnCostFunction
+from back_propagation import nnCostFunction
 
 X = np.array([[0.54030231, -0.41614684],
               [-0.9899925, -0.65364362],

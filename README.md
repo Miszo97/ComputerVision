@@ -9,6 +9,5 @@ We can consider the whole project to be composed of two layers.
 - Backend layer (machine learning algorithms)
 
 Preview
-<img src="https://static01.bbi.io/2Wt9Tk.gif"/>
-![demo](https://imgur.com/EGoE2cK)
 
+[![Alt text](http://i3.ytimg.com/vi/rzdc8fCv1Dw/hqdefault.jpg)](https://www.youtube.com/watch?v=rzdc8fCv1Dw&)

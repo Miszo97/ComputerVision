@@ -11,12 +11,11 @@ def predict(Theta1, Theta2, X):
     The following function performs feed-forward propagation to predict final value
     a - activation layer
     """
-    m = X.size()
 
     a1 = X
     a1 = addOneColumn(a1)  # add bias term
 
-    z2 = Theta1 @ a1.T
+    z2 = Theta1.dot(a1.T)
     a2 = sigmoid(z2)
 
     a2 = addOneRow(a2)
@@ -24,6 +23,13 @@ def predict(Theta1, Theta2, X):
 
     a3 = sigmoid(z3)
 
-    predictions = a3
+    predictions = a3.T
 
-    return max(a3)
+    return predictions
+
+
+def get_predicted_number(predictions):
+    predicted_value_pos = np.argmax(predictions, axis=1)
+    predicted_val = [(0 if predicted_value_pos == 9 else predicted_value_pos + 1) for predicted_value_pos in
+                     predicted_value_pos]
+    return predicted_val

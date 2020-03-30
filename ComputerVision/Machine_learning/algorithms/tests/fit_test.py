@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Machine_learning.FitNeuralNetwork import fit
+from fit_neural_network import fit
 
 X = np.array([[0.54030231, -0.41614684],
               [-0.9899925, -0.65364362],
