@@ -17,12 +17,13 @@
         </form>
         <p>Click "a" to append new example.</p>
         <p>Click "c" to clear the canvas.</p>
+        <p id="counter">0</p>
         <div id="user-examples-creatorF">
             <canvas id='user-example-creator-canvas' width="200" height="200"
                     style="border:1px solid #000000;"></canvas>
             <script src="{% static 'number_recognition/user_examples_creator_scripts.js' %}"></script>
             <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
-            <button id="accept_button" onclick="addToGallery()">Accept</button>
+            <button id="accept_button" onclick="addExampleToGallery()">Accept</button>
             <button id="clear_button" onclick="clearCanvas()">Clear</button>
             <button id="send_all_button" onclick="sendUserExamplesFromGallery()">SendAll</button>
             <label for="numbers_choice">Choose a number:</label>
@@ -37,6 +38,7 @@
                 <option value=7>7</option>
                 <option value=8>8</option>
                 <option value=9>9</option>
+                <option value=0>0</option>
             </select>
         </div>
     </div>

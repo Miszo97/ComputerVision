@@ -3,7 +3,7 @@
 
 let addedExamplesNumberTotal = 0;
 
-function addToGallery() {
+function addExampleToGallery() {
     addedExamplesNumberTotal++;
 
     const userExampleCreatorCanvas = document.getElementById('user-example-creator-canvas');
@@ -39,6 +39,8 @@ function addToGallery() {
         let label = document.createElement('p');
         label.innerText = document.getElementById("numbers_choice").value;
 
+        document.getElementById("counter").innerHTML = String(addedExamplesNumberTotal);
+
         div.appendChild(canvasCopy);
         div.appendChild(label);
         div.appendChild(discardButton);
@@ -54,7 +56,7 @@ document.addEventListener('keydown', (event) => {
 
     switch (keyName) {
         case 'a': // do not alert when only Control key is pressed.
-            addToGallery();
+            addExampleToGallery();
             break;
         case 'c':
             clearCanvas();

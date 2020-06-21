@@ -1,7 +1,8 @@
 # Create your views here.
+import os
 
 from PIL import Image
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 import sqlite3
@@ -14,6 +15,8 @@ import base64
 import json
 
 from .models import User_Example
+from Machine_learning.helpers import loadThetaParameters
+from Machine_learning.predict import predict, get_predicted_number
 
 
 def index(request):
@@ -29,6 +32,19 @@ def send_drawings(request):
     examples_model = [User_Example(drawing_base64=e['dataURL'], label=e['label']) for e in examples]
     User_Example.objects.bulk_create(examples_model)
     return HttpResponseRedirect(reverse('number_recognition:feed_model'))
+
+
+def predict_number(request):
+    user_example = json.loads(request.GET['number_to_predict'])
+    converted_example = convertImage(user_example)
+    converted_example = converted_example.reshape(1, 400)
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, "../theta_parameters.npz")
+    theta1, theta2 = loadThetaParameters(path)
+    predictions = predict(theta1, theta2, converted_example)
+    predicted_number = get_predicted_number(predictions)
+    response = {'predicted_number': int(predicted_number[0])}
+    return JsonResponse(response)
 
 
 def examples_selection(request):
@@ -49,7 +65,7 @@ def update_examples(request):
             conn = sqlite3.connect('DataSet.db')
             for e in examples_to_accept:
                 # Convert image to to the format the classifier is expecting.
-                norm_image = convertImage(e)
+                norm_image = convertImage(e.drawing_base64)
 
                 # Save the example in a table format ready to be stored in a database.
                 df = pd.DataFrame(
@@ -68,7 +84,7 @@ def convertImage(e):
     Specifically 20x20 matrix with values in range 0 to 1.
     """
 
-    image_b64 = e.drawing_base64
+    image_b64 = e
     imgstr = re.search(r'base64,(.*)', image_b64).group(1)
     image_bytes = io.BytesIO(base64.b64decode(imgstr))
     im = Image.open(image_bytes)
