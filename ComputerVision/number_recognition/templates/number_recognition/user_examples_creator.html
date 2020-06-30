@@ -10,6 +10,9 @@
 <body>
 
 <div id="Container">
+    <div id="top-bar">
+        <a href={% url 'number_recognition:index' %}>Go back!</a>
+    </div>
     <div id="user-examples-creator-space">
         <form id='new-examples-form' action="{% url 'number_recognition:send_drawings' %}" method="post">
             {% csrf_token %}
