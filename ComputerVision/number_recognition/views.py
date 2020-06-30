@@ -15,8 +15,8 @@ import base64
 import json
 
 from .models import User_Example
-from Machine_learning.helpers import loadThetaParameters
-from Machine_learning.predict import predict, get_predicted_number
+from Machine_learning.algorithms.helpers import loadThetaParameters
+from Machine_learning.algorithms.predict import predict, get_predicted_number
 
 
 def index(request):
