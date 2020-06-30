@@ -1,6 +1,7 @@
 "use strict";
 
-let canvas = document.getElementById('canvas');
+//let canvas = document.getElementById('canvas');
+let canvas = document.getElementsByTagName('canvas')[0] // first canvas on the page
 let context = canvas.getContext("2d");
 
 let clickX = [];
