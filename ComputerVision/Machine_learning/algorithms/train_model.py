@@ -1,52 +1,90 @@
-import numpy as np
-import pandas as pd
+# TensorFlow and tf.keras
+import tensorflow as tf
+from tensorflow import keras
 
-from fit_neural_network import fit
-from cost_function import cost_function
-from predict import predict, get_predicted_number
-from helpers import saveThetaParameters, get_accuracy, fetch_data_set, shuffle_data, split
+import numpy as np
+import matplotlib.pyplot as plt
+
+from helpers import split, fetch_data_set, shuffle_data
+
+save = False
 
 x, y, m = fetch_data_set(percent=100)
 
 x, y = shuffle_data(x, y)
 
-# settings
-max_iteration_number = 400
-lambda_parameter = 2
-save_after_training = False
+x, x_test = split(x, [80])
+y, y_test = split(y, [80])
 
-hidden_layer_size = 20
-input_layer_size = 401
+print(x.shape, y.shape, x_test.shape, y_test.shape)
 
-Theta1 = (np.random.rand(input_layer_size * hidden_layer_size) * 2 - 1).reshape(hidden_layer_size, input_layer_size)
-Theta2 = (np.random.rand((hidden_layer_size + 1) * 10) * 2 - 1).reshape(10, hidden_layer_size + 1)
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(400, 1)),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10)
+])
 
-x, x_val, x_test = split(x, [80, 99])
-y, y_val, y_test = split(y, [80, 99])
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
 
-print("Start optimization with \n lambda = {} \n max_iteration_number = {} \n examples = {}".format(
-    lambda_parameter,
-    max_iteration_number, m))
+model.fit(x, y, epochs=10)
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
 
-Theta1, Theta2 = fit([Theta1, Theta2], x, y, max_iteration_number, lambda_parameter)
+if save:
+    model.save('model.h5')
 
-predictions = predict(Theta1, Theta2, x_val)
-predicted_numbers = get_predicted_number(predictions)
-corretness = np.array(predicted_numbers).reshape(y_val.shape) == y_val
-results = np.c_[predictions, predicted_numbers, y_val, corretness]
-results_to_show = pd.DataFrame(results, columns=[1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
-                                                 'Predicted Value', 'Actual value', 'Correct value'])
+print('\nTest accuracy:', test_acc)
 
-print("Results")
-print(results_to_show)
+probability_model = tf.keras.Sequential([model,
+                                         tf.keras.layers.Softmax()])
 
-val_cost = cost_function([Theta1, Theta2], x_val, y_val, 0)
-training_cost = cost_function([Theta1, Theta2], x, y, 0)
-print(training_cost)
-print(val_cost)
+predictions = probability_model.predict(x_test)
 
-accuracy = get_accuracy(predicted_numbers, list(y_val))
-print("accuracy = {}".format(accuracy))
 
-if save_after_training:
-    saveThetaParameters('theta_parameters.npz', Theta1, Theta2)
+def plot_image(i, predictions_array, true_label, img):
+    predictions_array, true_label, img = predictions_array, true_label[i], img[i].reshape(20, 20)
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.imshow(img, cmap=plt.cm.binary)
+
+    predicted_label = np.argmax(predictions_array)
+    if predicted_label == true_label:
+        color = 'blue'
+    else:
+        color = 'red'
+
+    plt.xlabel("{} {:2.0f}% ({})".format(predicted_label,
+                                         100 * np.max(predictions_array),
+                                         true_label),
+               color=color)
+
+
+def plot_value_array(i, predictions_array, true_label):
+    predictions_array, true_label = predictions_array, true_label[i]
+    plt.grid(False)
+    plt.xticks(range(10))
+    plt.yticks([])
+    thisplot = plt.bar(range(10), predictions_array, color="#777777")
+    plt.ylim([0, 1])
+    predicted_label = np.argmax(predictions_array)
+
+    thisplot[predicted_label].set_color('red')
+    thisplot[int(true_label)].set_color('blue')
+
+
+# Plot the first X test images, their predicted labels, and the true labels.
+# Color correct predictions in blue and incorrect predictions in red.
+num_rows = 5
+num_cols = 3
+num_images = num_rows * num_cols
+plt.figure(figsize=(2 * 2 * num_cols, 2 * num_rows))
+for i in range(num_images):
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 1)
+    plot_image(i, predictions[i], y_test, x_test)
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 2)
+    plot_value_array(i, predictions[i], y_test)
+plt.tight_layout()
+plt.show()

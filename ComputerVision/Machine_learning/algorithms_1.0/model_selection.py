@@ -1,7 +1,7 @@
 import numpy as np
 
 from .cost_function import cost_function
-from .helpers import fetch_data_set, split, shuffle_data
+from .helperspy import fetch_data_set, split, shuffle_data
 import matplotlib.pyplot as plt
 from .fit_neural_network import fit
 
