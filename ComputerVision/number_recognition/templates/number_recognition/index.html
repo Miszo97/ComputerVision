@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{% static 'number_recognition/index_styles.css' %}" rel="stylesheet">
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
 
     <title>Index document</title>
 </head>
@@ -16,10 +16,10 @@
 <div id="container">
     <h1>Number recognition</h1>
     <li><a href="{% url 'number_recognition:feed_model' %}">Feed model! 🍏</a></li>
-    <canvas id="canvas" width="200" height="200" style="border:1px solid #000000;"></canvas>
+    <canvas id="canvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
     <br>
     <button onclick="clearCanvas()">Clear! :)</button>
-    <button onclick="sendNumber()">Predict!</button>
+    <button onclick="sendUserDrewImage()">Predict!</button>
     <br>
     <br>
     <i class="fas fa-robot"></i>
