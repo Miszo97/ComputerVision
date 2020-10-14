@@ -75,7 +75,7 @@ def get_accuracy(predicted, actual):
 
 def convertImage(e):
     """
-    Convert image to to the format the classifier is expecting.
+    Convert an image to to the format the classifier is expecting.
     Specifically 20x20 matrix with values in range 0 to 1.
     """
 
@@ -108,6 +108,9 @@ def first_pixel(o, ar):
     if o is 'right':
         for i in range(ar.shape[1]):
             if np.where(ar[0:, -1 - i] != 0)[0].size: return ar.shape[1] - 1 - i
+
+    # if it didn't find the first occurence of a pixel or the orientation wasn't correctly specified
+    return -1
 
 
 def crop(ar):
