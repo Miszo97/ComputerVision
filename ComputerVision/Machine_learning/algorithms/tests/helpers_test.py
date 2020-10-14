@@ -95,8 +95,20 @@ class TestFirstPixelMethod(unittest.TestCase):
         self.assertEqual(first_pixel('down', ar), row_len - 2)
         self.assertEqual(first_pixel('right', ar), column_len - 3)
 
+    def no_pixels_at_all(self):
+        ar = np.array(
+            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
 
-class TestFirstPixelMethod(unittest.TestCase):
+        column_len = ar.shape[1]
+        row_len = ar.shape[0]
+
+        self.assertEqual(first_pixel('up', ar), -1)
+        self.assertEqual(first_pixel('left', ar), -1)
+        self.assertEqual(first_pixel('down', ar), -1)
+        self.assertEqual(first_pixel('right', ar), -1)
+
+
+class TestCropMethod(unittest.TestCase):
     def test_case_first(self):
         ar = np.array(
             [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]])
