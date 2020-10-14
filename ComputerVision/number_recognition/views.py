@@ -1,7 +1,6 @@
 # Create your views here.
 import os
 
-from PIL import Image
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -9,14 +8,13 @@ import sqlite3
 import pickle
 import pandas as pd
 import numpy as np
-import io
-import re
-import base64
 import json
+from tensorflow import keras
 
 from .models import User_Example
-from Machine_learning.algorithms.helpers import loadThetaParameters
-from Machine_learning.algorithms.predict import predict, get_predicted_number
+from Machine_learning.algorithms.helpers import convertImage
+
+DATABASES = ['DataSet.db', 'DataSet2.db']
 
 
 def index(request):
@@ -25,6 +23,15 @@ def index(request):
 
 def feed_model(request):
     return render(request, 'number_recognition/user_examples_creator.html')
+
+
+def request_a_model(request):
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, "../Machine_learning//algorithms/model.h5")
+    requested_model = keras.models.load_model(path)
+    json = requested_model.to_json()
+    response = {'requested_model': json}
+    return JsonResponse(response)
 
 
 def send_drawings(request):
@@ -39,11 +46,11 @@ def predict_number(request):
     converted_example = convertImage(user_example)
     converted_example = converted_example.reshape(1, 400)
     my_path = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.join(my_path, "../theta_parameters.npz")
-    theta1, theta2 = loadThetaParameters(path)
-    predictions = predict(theta1, theta2, converted_example)
-    predicted_number = get_predicted_number(predictions)
-    response = {'predicted_number': int(predicted_number[0])}
+    path = os.path.join(my_path, "../Machine_learning//algorithms/model.h5")
+    model = keras.models.load_model(path)
+    predictions_single = model.predict(converted_example)
+    predicted_number = int(np.argmax(predictions_single))
+    response = {'predicted_number': predicted_number}
     return JsonResponse(response)
 
 
@@ -62,7 +69,7 @@ def update_examples(request):
         return
     else:
         if len(examples_to_accept) != 0:
-            conn = sqlite3.connect('DataSet.db')
+            conn = sqlite3.connect(DATABASES[0])
             for e in examples_to_accept:
                 # Convert image to to the format the classifier is expecting.
                 norm_image = convertImage(e.drawing_base64)
@@ -78,22 +85,3 @@ def update_examples(request):
     return HttpResponseRedirect(reverse('number_recognition:examples_selection'))
 
 
-def convertImage(e):
-    """
-    Convert image to to the format the classifier is expecting.
-    Specifically 20x20 matrix with values in range 0 to 1.
-    """
-
-    image_b64 = e
-    imgstr = re.search(r'base64,(.*)', image_b64).group(1)
-    image_bytes = io.BytesIO(base64.b64decode(imgstr))
-    im = Image.open(image_bytes)
-    arr = np.array(im)[:, :, 0]
-    scaled_image = np.array(Image.fromarray(arr).resize((20, 20)))
-    # normalization
-    min_element = np.min(scaled_image)
-    max_element = np.max(scaled_image)
-    delta = max_element - min_element
-    norm_image = (scaled_image - min_element) / delta
-
-    return norm_image
