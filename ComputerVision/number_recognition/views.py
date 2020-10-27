@@ -3,6 +3,7 @@ import os
 
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.http import FileResponse
 from django.urls import reverse
 import sqlite3
 import pickle
@@ -26,12 +27,16 @@ def feed_model(request):
 
 
 def request_a_model(request):
+    return render(request, 'number_recognition/model.json')
+
+
+def group1_shard1of1_bin(request):
     my_path = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.join(my_path, "../Machine_learning//algorithms/model.h5")
-    requested_model = keras.models.load_model(path)
-    json = requested_model.to_json()
-    response = {'requested_model': json}
-    return JsonResponse(response)
+    path = os.path.join(my_path, "./templates/number_recognition/group1-shard1of1.bin")
+    print(path)
+    weights = open(path, 'rb')
+    response = FileResponse(weights)
+    return response
 
 
 def send_drawings(request):
@@ -83,5 +88,3 @@ def update_examples(request):
             conn.close()
 
     return HttpResponseRedirect(reverse('number_recognition:examples_selection'))
-
-
