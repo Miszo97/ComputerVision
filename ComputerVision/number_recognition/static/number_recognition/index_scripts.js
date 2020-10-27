@@ -1,3 +1,5 @@
+let model;
+
 function sendUserDrewImage() {
     let canvas = document.getElementById('canvas');
 
@@ -59,19 +61,20 @@ function first_pixel(orientation, array) {
 
 }
 
-function crop(ar) {
-    let left_border = first_pixel('left', ar)
-    let right_border = first_pixel('right', ar)
-    let top_border = first_pixel('up', ar)
-    let bottom_border = first_pixel('down', ar)
+function crop(tensor2d) {
+    const left_border = first_pixel('left', tensor2d);
+    const right_border = first_pixel('right', tensor2d);
+    const top_border = first_pixel('up', tensor2d);
+    const bottom_border = first_pixel('down', tensor2d);
 
-
-    return 0;
+    return tensor2d.slice([top_border, left_border], [bottom_border - top_border + 1, right_border - left_border + 1]);
 }
 
 function RGBA3dMatrixTo2dMatrix(Matrix3d) {
     //Get rid of third dimension by leaving only the first entry of it
-    return Matrix3d.slice([0, 0, 0], [Matrix3d.shape[0], Matrix3d.shape[1], 1]).flatten().reshape([2, 2]);
+    const x = Matrix3d.shape[0];
+    const y = Matrix3d.shape[1];
+    return Matrix3d.slice([0, 0, 0], [x, y, 1]).flatten().reshape([x, y]);
 }
 
 function resize(tensor2d, size) {
@@ -92,18 +95,38 @@ function resize(tensor2d, size) {
 function convertCanvasToNNFirstLayer() {
     let canvas = document.getElementById('canvas');
     let ctx = canvas.getContext("2d");
-    ctx.scale(20, 20)
     let imageData = ctx.getImageData(0, 0, canvas.height, canvas.width);
     let image_tensor3d = tf.browser.fromPixels(imageData);
-    let matrix2d = RGBA3dMatrixTo2dMatrix(image_tensor3d)
-    let cropped_canvas = crop(image_tensor);
+    let matrix2d = RGBA3dMatrixTo2dMatrix(image_tensor3d);
+    let cropped_tesor = crop(matrix2d);
+    let resized_cropped_image = resize(cropped_tesor, [20, 20]);
+    //normalize
+    const min_element = tf.min(resized_cropped_image);
+    const max_element = tf.max(resized_cropped_image);
+    const delta = max_element.sub(min_element);
+    let normalized_image = (resized_cropped_image.sub(min_element)).div(delta);
+    const first_layer = normalized_image.reshape([1, 400]);
+    return first_layer;
 }
 
-function predictTheNumber() {
-    let input_layer = convertCanvasToNNFirstLayer();
+function predictANumber(input_layer) {
+    const predictions = model.predict(input_layer.reshape([1, 400, 1])).squeeze();
+    return predictions.argMax();
 }
 
-let model;
+function predictAndDisplayTheNumberFromCanvas() {
+    const input_layer = convertCanvasToNNFirstLayer();
+    const predicted_number = predictANumber(input_layer).arraySync();
+
+    let predictedNumberHolder = document.getElementById("predicted-number-holder")
+    predictedNumberHolder.innerHTML = predicted_number;
+}
+
+
+async function f() {
+    model = await tf.loadLayersModel('http://127.0.0.1:8000/number_recognition/request_a_model');
+}
+
 
 function requestAModel() {
 
@@ -123,3 +146,4 @@ function requestAModel() {
 
 }
 
+f()
