@@ -74,6 +74,20 @@ function RGBA3dMatrixTo2dMatrix(Matrix3d) {
     return Matrix3d.slice([0, 0, 0], [Matrix3d.shape[0], Matrix3d.shape[1], 1]).flatten().reshape([2, 2]);
 }
 
+function resize(tensor2d, size) {
+
+    //Resizing function accepts at least 3D tensors
+    // so let's expand it's dimensions
+    let tensor3d = tensor2d.expandDims(2);
+    //resize to given size
+    let resized3d = tf.image.resizeBilinear(tensor3d, size);
+    //Get rid of third 1-lenght dimension
+    let resized2d = resized3d.squeeze();
+
+    return resized2d;
+
+}
+
 
 function convertCanvasToNNFirstLayer() {
     let canvas = document.getElementById('canvas');
