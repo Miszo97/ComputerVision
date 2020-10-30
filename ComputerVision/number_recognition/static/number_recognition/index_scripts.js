@@ -127,6 +127,14 @@ async function f() {
     model = await tf.loadLayersModel('http://127.0.0.1:8000/number_recognition/request_a_model');
 }
 
+function resetWorkSpace() {
+    //clear canvas and the previous result
+
+    clearCanvas();
+    let predictedNumberHolder = document.getElementById("predicted-number-holder");
+    predictedNumberHolder.innerHTML = ""
+}
+
 
 function requestAModel() {
 
