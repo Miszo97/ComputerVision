@@ -1,13 +1,32 @@
 "use strict";
 
 //let canvas = document.getElementById('canvas');
-let canvas = document.getElementsByTagName('canvas')[0] // first canvas on the page
+let canvas = document.getElementsByTagName('canvas')[0]; // first canvas on the page
 let context = canvas.getContext("2d");
 
 let clickX = [];
 let clickY = [];
 let clickDrag = [];
+let mouseDownCounter = 0;
 let paint;
+const timeout = 1000;
+
+function predictAndDisplayNumberFromCanvasIfUserStopsDrawing() {
+    let mouseDownCounterCopy = JSON.parse(JSON.stringify(mouseDownCounter));
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(
+            () => {
+
+                //if a user hasn't drawn anything since last time
+                if (mouseDownCounterCopy == mouseDownCounter) {
+                    predictAndDisplayTheNumberFromCanvas();
+                    resolve();
+                }
+                reject();
+            },
+            timeout)
+    });
+}
 
 function addClick(x, y, dragging) {
 
@@ -42,6 +61,8 @@ function redraw() {
 function onmousedown(e) {
 
     paint = true;
+    mouseDownCounter++;
+    console.log(mouseDownCounter);
     addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
     redraw();
 }
@@ -54,7 +75,9 @@ function onmousemove(e) {
 }
 
 function onmouseup(e) {
+
     paint = false;
+    predictAndDisplayNumberFromCanvasIfUserStopsDrawing()
 }
 
 function onmouseleave(e) {
