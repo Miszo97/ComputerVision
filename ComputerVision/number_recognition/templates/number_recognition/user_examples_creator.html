@@ -11,23 +11,26 @@
 </head>
 <body>
 
-<div id="Container">
-    <div id="top-bar">
-        <a href={% url 'number_recognition:index' %}>Go back!</a>
-    </div>
-    <div id="user-examples-creator-space">
+<ul class="nav">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'number_recognition:index' %}">Predict</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'number_recognition:feed_model' %}">Feed model</a>
+    </li>
+</ul>
+
+<div class="container">
+
+
+    <div class="container mx-auto" style="width: 400px;" id="user-examples-creator-space">
         <form id='new-examples-form' action="{% url 'number_recognition:send_drawings' %}" method="post">
             {% csrf_token %}
             <input type="hidden" id="user-examples" name="examples">
         </form>
-        <p>Click "a" to append new example.</p>
-        <p>Click "c" to clear the canvas.</p>
-        <p id="counter">0</p>
         <div id="user-examples-creatorF">
-            <canvas id='user-example-creator-canvas' width="200" height="200"
+            <canvas id='user-example-creator-canvas' width="400" height="400"
                     style="border:1px solid #000000;"></canvas>
-            <script src="{% static 'number_recognition/user_examples_creator_scripts.js' %}"></script>
-            <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
             <button id="accept_button" onclick="addExampleToGallery()">Accept</button>
             <button id="clear_button" onclick="clearCanvas()">Clear</button>
             <button id="send_all_button" onclick="sendUserExamplesFromGallery()">SendAll</button>
@@ -45,11 +48,19 @@
                 <option value=9>9</option>
                 <option value=0>0</option>
             </select>
+
+            <p>Click "a" to append new example.</p>
+            <p>Click "c" to clear the canvas.</p>
+            <p id="counter">0</p>
         </div>
     </div>
-    <div id="user-examples-gallery">
+    <div class="container" id="user-examples-gallery">
+
     </div>
 </div>
+
+<script src="{% static 'number_recognition/user_examples_creator_scripts.js' %}"></script>
+<script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

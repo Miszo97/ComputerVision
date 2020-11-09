@@ -11,15 +11,13 @@
 </head>
 <body>
 
-<form id='deleted-examples-form' action="{% url 'number_recognition:update_examples' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" id="deleted-examples" name="deleted-examples">
-</form>
+<div class="container">
 
-<div id="Container">
-    <div id="top-bar">
-        <a href={% url 'number_recognition:index' %}>Go back!</a>
-    </div>
+    <form id='deleted-examples-form' action="{% url 'number_recognition:update_examples' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="deleted-examples" name="deleted-examples">
+    </form>
+
     <input type="button" id="update-examples-button" value="Update!" onclick="updateExamples()">
 
     <div id="user-examples-gallery">
