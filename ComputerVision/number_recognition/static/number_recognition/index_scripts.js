@@ -1,4 +1,7 @@
 let model;
+let myBarChart;
+
+const MODEL_URL = 'http://127.0.0.1:8000/number_recognition/request_a_model';
 
 function sendUserDrewImage() {
     let canvas = document.getElementById('canvas');
@@ -91,48 +94,105 @@ function resize(tensor2d, size) {
 
 }
 
+function getImageDataFromCanvas(canvasID) {
+    let canvas = document.getElementById(canvasID);
+    let ctx = canvas.getContext("2d");
+    return ctx.getImageData(0, 0, canvas.height, canvas.width);
+}
 
 function convertCanvasToNNFirstLayer() {
-    let canvas = document.getElementById('canvas');
-    let ctx = canvas.getContext("2d");
-    let imageData = ctx.getImageData(0, 0, canvas.height, canvas.width);
+
+    //convert and resize a 3d RGB canvas to a 2d tensor [20,20]
+    let imageData = getImageDataFromCanvas('canvas');
     let image_tensor3d = tf.browser.fromPixels(imageData);
     let matrix2d = RGBA3dMatrixTo2dMatrix(image_tensor3d);
     let cropped_tesor = crop(matrix2d);
     let resized_cropped_image = resize(cropped_tesor, [20, 20]);
+
     //normalize
     const min_element = tf.min(resized_cropped_image);
     const max_element = tf.max(resized_cropped_image);
     const delta = max_element.sub(min_element);
     let normalized_image = (resized_cropped_image.sub(min_element)).div(delta);
+
+    //reshape [1,400]
     const first_layer = normalized_image.reshape([1, 400]);
     return first_layer;
 }
 
-function predictANumber(input_layer) {
-    const predictions = model.predict(input_layer.reshape([1, 400, 1])).squeeze();
+function makePredictions(input_layer) {
+    //return a tensor of a probability distribution of each number
+    return tf.softmax(model.predict(input_layer.reshape([1, 400, 1])).squeeze());
+}
+
+function predictANumber(predictions) {
+    //return a number with the highest probability
     return predictions.argMax();
 }
 
 function predictAndDisplayTheNumberFromCanvas() {
-    const input_layer = convertCanvasToNNFirstLayer();
-    const predicted_number = predictANumber(input_layer).arraySync();
 
-    let predictedNumberHolder = document.getElementById("predicted-number-holder")
-    predictedNumberHolder.innerHTML = predicted_number;
+    //predict
+    const input_layer = convertCanvasToNNFirstLayer();
+    const predictions = makePredictions(input_layer);
+    const predicted_number = predictANumber(predictions).arraySync();
+
+    //display
+    let predictedNumberHolder = document.getElementById('predicted-number-holder');
+    let predictedNumberChance = document.getElementById('predicted-number-chance');
+    predictedNumberHolder.innerText = predicted_number;
+    predictedNumberChance.innerHTML = " " + Math.trunc(predictions.max().arraySync() * 100) + "%";
+
+    const canvas = document.getElementById('probability-distribution-chart');
+    let ctx = canvas.getContext('2d');
+
+    myBarChart.destroy();
+
+    myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            datasets: [{
+                data: predictions.arraySync(),
+                backgroundColor: '#28c9c4',
+                label: "probability distribution",
+            }]
+        },
+    });
+
 }
 
 
-async function f() {
-    model = await tf.loadLayersModel('http://127.0.0.1:8000/number_recognition/request_a_model');
+async function fetchAModel() {
+    model = await tf.loadLayersModel(MODEL_URL);
+}
+
+function initializeProbabilityDistributionChart() {
+    let ctx = document.getElementById('probability-distribution-chart').getContext('2d');
+    myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        },
+        backgroundColor: 'blue'
+    });
+}
+
+function clearProbabilityDistributionChart() {
+    myBarChart.destroy();
+    initializeProbabilityDistributionChart();
 }
 
 function resetWorkSpace() {
-    //clear canvas and the previous result
+    //clear previous results
 
     clearCanvas();
+    clearProbabilityDistributionChart();
+
     let predictedNumberHolder = document.getElementById("predicted-number-holder");
-    predictedNumberHolder.innerHTML = ""
+    let predictedNumberChance = document.getElementById('predicted-number-chance');
+    predictedNumberHolder.innerHTML = "";
+    predictedNumberChance.innerHTML = "";
 }
 
 
@@ -154,4 +214,7 @@ function requestAModel() {
 
 }
 
-f()
+fetchAModel();
+
+
+initializeProbabilityDistributionChart();

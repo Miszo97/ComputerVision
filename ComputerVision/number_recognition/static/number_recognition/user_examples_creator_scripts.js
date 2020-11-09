@@ -1,5 +1,7 @@
 "use strict";
 
+const CANVAS_CREATOR_WIDTH = 400;
+const CANVAS_CREATOR_HEIGHT = 400;
 
 let addedExamplesNumberTotal = 0;
 
@@ -7,7 +9,7 @@ function addExampleToGallery() {
     addedExamplesNumberTotal++;
 
     const userExampleCreatorCanvas = document.getElementById('user-example-creator-canvas');
-    const userExampleCreatorCanvasArray = userExampleCreatorCanvas.getContext('2d').getImageData(0, 0, 200, 200).data;
+    const userExampleCreatorCanvasArray = userExampleCreatorCanvas.getContext('2d').getImageData(0, 0, CANVAS_CREATOR_WIDTH, CANVAS_CREATOR_HEIGHT).data;
 
     // checks whether an element is not zero
     const isNonZero = (element) => element !== 0;
