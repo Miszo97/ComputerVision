@@ -196,24 +196,6 @@ function resetWorkSpace() {
 }
 
 
-function requestAModel() {
-
-    $.ajax({
-        url: 'request_a_model',
-        data: {
-            'model': 'number_recognition_model'
-        },
-        dataType: 'json',
-        success: async function (data) {
-            let model_json_string = data.requested_model;
-            model = await tf.models.modelFromJSON(JSON.parse(model_json_string))
-        }
-
-    });
-
-
-}
-
 fetchAModel();
 
 
