@@ -29,26 +29,25 @@
 <div class="container">
 
 
-    <div id="user-creator-space" class="mb-4">
+    <div id="user-creator-space" class="mb-4 mt-4">
 
         <div class="mx-auto" style="width: 400px;">
-            <canvas id="canvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
-            <div class="" style="width: 400px;">
-                <button onclick="predictAndDisplayTheNumberFromCanvas()">Predict!</button>
-                <button onclick="resetWorkSpace()">
-                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-x-circle" fill="currentColor"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path fill-rule="evenodd"
-                              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                    </svg>
+            <canvas id="drawing-canvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+            <div class="d-flex" style="width: 400px;">
+                <button type="button" onclick="predictAndDisplayTheNumberFromCanvas()" class="btn btn-primary mr-1">Predict
                 </button>
+                <button type="button" onclick="resetWorkSpace()" class="btn btn-light">Clear</button>
+                <div class="form-check ml-auto">
+                    <input class="form-check-input" type="checkbox" value="" id="auto-predict-radio" checked>
+                    <label class="form-check-label" for="auto-predict-radio">
+                        Auto predict
+                    </label>
+                </div>
             </div>
         </div>
     </div>
     <div id="results-space" class="container">
-        <div class="container" id="predicted-number-space">
+        <div class="container mb-3 mt-1" id="predicted-number-space">
             <h1 id="predicted-number-holder" class="text-center display-4">
             </h1>
         </div>
@@ -80,6 +79,8 @@
 <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+</script>
+
 <script src="{% static 'number_recognition/canvas_drawing.js' %}"></script>
 <script src="{% static 'number_recognition/index_scripts.js' %}"></script>

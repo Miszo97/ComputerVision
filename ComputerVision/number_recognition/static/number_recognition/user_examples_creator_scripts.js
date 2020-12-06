@@ -4,11 +4,17 @@ const CANVAS_CREATOR_WIDTH = 400;
 const CANVAS_CREATOR_HEIGHT = 400;
 
 let addedExamplesNumberTotal = 0;
+let currentAmountOfExamples = 0;
 
 function addExampleToGallery() {
     addedExamplesNumberTotal++;
+    currentAmountOfExamples++;
 
-    const userExampleCreatorCanvas = document.getElementById('user-example-creator-canvas');
+    if(currentAmountOfExamples%3 === 0){
+        $('#user-examples-gallery')[0].append(document.createElement("row"))
+    }
+
+    const userExampleCreatorCanvas = document.getElementById('drawing-canvas');
     const userExampleCreatorCanvasArray = userExampleCreatorCanvas.getContext('2d').getImageData(0, 0, CANVAS_CREATOR_WIDTH, CANVAS_CREATOR_HEIGHT).data;
 
     // checks whether an element is not zero
@@ -22,7 +28,7 @@ function addExampleToGallery() {
 
         let div = document.createElement('div');
         div.id = 'user-example-instance_' + addedExamplesNumberTotal;
-        div.className = 'user-example-instance';
+        div.className = 'column-4';
 
 
         let discardButton = document.createElement('button');
@@ -30,6 +36,7 @@ function addExampleToGallery() {
         let addedExamplesNumberTotal_copy = addedExamplesNumberTotal;
         discardButton.onclick = () => {
             gallery.removeChild(document.getElementById('user-example-instance_' + addedExamplesNumberTotal_copy))
+            currentAmountOfExamples--;
         };
 
 
@@ -46,26 +53,13 @@ function addExampleToGallery() {
         div.appendChild(canvasCopy);
         div.appendChild(label);
         div.appendChild(discardButton);
-        gallery.appendChild(div);
+        gallery.lastChild.appendChild(div);
 
         clearCanvas();
     }
 }
 
 
-document.addEventListener('keydown', (event) => {
-    const keyName = event.key;
-
-    switch (keyName) {
-        case 'a': // do not alert when only Control key is pressed.
-            addExampleToGallery();
-            break;
-        case 'c':
-            clearCanvas();
-            break;
-    }
-
-}, false);
 
 function clearCanvas() {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the UserExampleCreatorCanvas
@@ -84,9 +78,45 @@ function getUserExamplesFromGallery() {
 function sendUserExamplesFromGallery() {
     let userExamplesFromGalleryJson = getUserExamplesFromGallery();
     let userExamplesFromGallery = JSON.stringify(userExamplesFromGalleryJson);
-    let newExamplesForm = document.getElementById('new-examples-form');
-    let userExamplesInput = document.getElementById('user-examples');
 
-    userExamplesInput.value = userExamplesFromGallery;
-    newExamplesForm.submit();
+    $('#user-examples')[0].value = userExamplesFromGallery;
+    $('#new-examples-form')[0].submit();
 }
+
+function onmousedown(e) {
+    paint = true;
+    addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+    redraw();
+}
+
+function onmousemove(e) {
+    if (paint) {
+        addClick(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop, true);
+        redraw();
+    }
+}
+
+function onmouseup(e) {
+
+    paint = false;
+}
+
+function onmouseleave(e) {
+    paint = false;
+}
+
+let context = $('#drawing-canvas')[0].getContext('2d');
+
+document.addEventListener('keydown', (event) => {
+    const keyName = event.key;
+
+    switch (keyName) {
+        case 'a': // do not alert when only Control key is pressed.
+            addExampleToGallery();
+            break;
+        case 'c':
+            clearCanvas();
+            break;
+    }
+
+}, false);

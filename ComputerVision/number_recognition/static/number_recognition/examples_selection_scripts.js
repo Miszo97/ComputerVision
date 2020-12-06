@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 //Send to the server ids of examples to be screened out
 function updateExamples() {

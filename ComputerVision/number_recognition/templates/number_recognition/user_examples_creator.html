@@ -28,29 +28,33 @@
             {% csrf_token %}
             <input type="hidden" id="user-examples" name="examples">
         </form>
-        <div id="user-examples-creatorF">
-            <canvas id='user-example-creator-canvas' width="400" height="400"
+        <div id="user-examples-creator" class="containe">
+            <canvas id='drawing-canvas' width="400" height="400"
                     style="border:1px solid #000000;"></canvas>
-            <button id="accept_button" onclick="addExampleToGallery()">Accept</button>
-            <button id="clear_button" onclick="clearCanvas()">Clear</button>
-            <button id="send_all_button" onclick="sendUserExamplesFromGallery()">SendAll</button>
-            <label for="numbers_choice">Choose a number:</label>
 
-            <select id="numbers_choice">
-                <option value=1>1</option>
-                <option value=2>2</option>
-                <option value=3>3</option>
-                <option value=4>4</option>
-                <option value=5>5</option>
-                <option value=6>6</option>
-                <option value=7>7</option>
-                <option value=8>8</option>
-                <option value=9>9</option>
-                <option value=0>0</option>
-            </select>
+            <div class="container border" id="user-interface">
+                <button id="clear_button" onclick="clearCanvas()">Clear</button>
+                <button id="send_all_button" onclick="sendUserExamplesFromGallery()">SendAll</button>
+                <label for="numbers_choice">Choose a number:</label>
 
-            <p>Click "a" to append new example.</p>
-            <p>Click "c" to clear the canvas.</p>
+                <select id="numbers_choice">
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                    <option value=9>9</option>
+                    <option value=0>0</option>
+                </select>
+
+            </div>
+            <div class="cointainer text-center" id="tutorial">
+                Click "a" to append a new example <br>
+                Click "c" to clear the canvas
+            </div>
             <p id="counter">0</p>
         </div>
     </div>

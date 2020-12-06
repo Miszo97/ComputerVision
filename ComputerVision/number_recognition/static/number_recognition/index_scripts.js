@@ -1,5 +1,7 @@
 let model;
 let myBarChart;
+let AUTO_PREDICTING = true;
+let canvasDrawer;
 
 const MODEL_URL = 'http://127.0.0.1:8000/number_recognition/request_a_model';
 
@@ -95,15 +97,14 @@ function resize(tensor2d, size) {
 }
 
 function getImageDataFromCanvas(canvasID) {
-    let canvas = document.getElementById(canvasID);
-    let ctx = canvas.getContext("2d");
-    return ctx.getImageData(0, 0, canvas.height, canvas.width);
+    const canvas = $('#' + canvasID)[0];
+    return canvas.getContext("2d").getImageData(0, 0, canvas.height, canvas.width);
 }
 
 function convertCanvasToNNFirstLayer() {
 
     //convert and resize a 3d RGB canvas to a 2d tensor [20,20]
-    let imageData = getImageDataFromCanvas('canvas');
+    let imageData = getImageDataFromCanvas('drawing-canvas');
     let image_tensor3d = tf.browser.fromPixels(imageData);
     let matrix2d = RGBA3dMatrixTo2dMatrix(image_tensor3d);
     let cropped_tesor = crop(matrix2d);
@@ -127,7 +128,8 @@ function makePredictions(input_layer) {
 
 function predictANumber(predictions) {
     //return a number with the highest probability
-    return predictions.argMax();
+
+    return predictions.argMax().arraySync();
 }
 
 function predictAndDisplayTheNumberFromCanvas() {
@@ -135,7 +137,7 @@ function predictAndDisplayTheNumberFromCanvas() {
     //predict
     const input_layer = convertCanvasToNNFirstLayer();
     const predictions = makePredictions(input_layer);
-    const predicted_number = predictANumber(predictions).arraySync();
+    const predicted_number = predictANumber(predictions);
 
     //display
     let predictedNumberHolder = document.getElementById('predicted-number-holder');
@@ -143,8 +145,8 @@ function predictAndDisplayTheNumberFromCanvas() {
     predictedNumberHolder.innerText = predicted_number;
     predictedNumberChance.innerHTML = " " + Math.trunc(predictions.max().arraySync() * 100) + "%";
 
-    const canvas = document.getElementById('probability-distribution-chart');
-    let ctx = canvas.getContext('2d');
+    let ctx = $('#probability-distribution-chart')[0].getContext('2d');
+
 
     myBarChart.destroy();
 
@@ -189,14 +191,58 @@ function resetWorkSpace() {
     clearCanvas();
     clearProbabilityDistributionChart();
 
-    let predictedNumberHolder = document.getElementById("predicted-number-holder");
-    let predictedNumberChance = document.getElementById('predicted-number-chance');
-    predictedNumberHolder.innerHTML = "";
-    predictedNumberChance.innerHTML = "";
+    $('#predicted-number-holder')[0].innerHTML = "";
+    $('#predicted-number-chance')[0].innerHTML = "";
 }
 
 
 fetchAModel();
 
-
 initializeProbabilityDistributionChart();
+
+
+
+
+$('#auto-predict-radio')[0].onchange = () => {
+    AUTO_PREDICTING = !AUTO_PREDICTING;
+}
+
+let mouseDownCounter = 0;
+const auto_predict_timeout = 500;
+
+function predictAndDisplayNumberFromCanvasIfUserStopsDrawing() {
+    let mouseDownCounterCopy = JSON.parse(JSON.stringify(mouseDownCounter));
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(
+            () => {
+
+                //if a user hasn't drawn anything since last time
+                if (mouseDownCounterCopy == mouseDownCounter) {
+                    predictAndDisplayTheNumberFromCanvas();
+                    resolve();
+                }
+                reject();
+            },
+            auto_predict_timeout)
+    });
+}
+
+
+
+function onmousedownOptional(e) {
+    mouseDownCounter++;
+}
+
+function onmousemoveOptional(e) {
+}
+
+function onmouseupOptional(e) {
+    if (AUTO_PREDICTING) {
+        predictAndDisplayNumberFromCanvasIfUserStopsDrawing()
+    }
+}
+
+function onmouseleaveOptional(e) {
+}
+
+canvasDrawer = new CanvasDrawer('drawing-canvas', onmousedownOptional,onmouseupOptional,onmousemoveOptional,onmouseleaveOptional);
