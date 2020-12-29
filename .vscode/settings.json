@@ -1,0 +1,10 @@
+{
+    "git.ignoreLimitWarning": true,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "python.analysis.completeFunctionParens": true
+}
