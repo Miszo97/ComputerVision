@@ -3,3 +3,6 @@ djangorestframework
 numpy
 pandas
 matplotlib
+django-extensions
+tensorflow
+tensorflowjs
