@@ -7,3 +7,4 @@ django-extensions
 tensorflow
 tensorflowjs
 django-heroku
+gunicorn
