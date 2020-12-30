@@ -1,1 +1,1 @@
-web: gunicorn ComputerVision.wsgi
+web: gunicorn ComputerVision.wsgi --timeout 15 --keep-alive 5 --log-level debug
