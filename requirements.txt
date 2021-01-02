@@ -1,6 +1,5 @@
 django
 djangorestframework
-numpy
 pandas
 matplotlib
 django-extensions
