@@ -1,6 +1,9 @@
 django
 djangorestframework
+pandas
+matplotlib
 django-extensions
+tensorflow
 tensorflowjs
 django-on-heroku
 gunicorn
