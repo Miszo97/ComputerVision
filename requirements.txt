@@ -6,5 +6,5 @@ matplotlib
 django-extensions
 tensorflow
 tensorflowjs
-django-heroku
+django-on-heroku
 gunicorn
