@@ -6,5 +6,3 @@ node_modules
 *.db
 *.npz
 *.sqlite3
-*.bin
-*.h5
