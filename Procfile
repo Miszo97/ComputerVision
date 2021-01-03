@@ -1,1 +1,1 @@
-web: gunicorn ComputerVision.wsgi --timeout 30 --keep-alive 30 --log-level debug
+web: gunicorn ComputerVision.wsgi --timeout 30 --keep-alive 30 --log-level debug --error-logfile gunicorn.error.log --access-logfile gunicorn.log --capture-output
