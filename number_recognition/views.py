@@ -10,7 +10,6 @@ import pickle
 import pandas as pd
 import numpy as np
 import json
-from tensorflow import keras
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
@@ -39,18 +38,19 @@ List all code snippets, or create a new snippet.
             return JsonResponse(serializer.data, status=201, safe=False)
         return JsonResponse(serializer.errors, status=400)
 
+
 @csrf_exempt
 def handleExampleSelectionRequest(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
 
-        #TODO Needs optimation
+        # TODO Needs optimation
         if data["command"] == "accept":
             conn = sqlite3.connect(DATABASES[0])
             for id in data["ids"]:
                 elements = User_Example.objects.filter(id=id)
                 e = elements.first()
-                
+
                 # Convert image to to the format the classifier is expecting.
                 norm_image = convertImage(e.drawing_base64)
 
@@ -62,20 +62,17 @@ def handleExampleSelectionRequest(request):
                 elements.delete()
 
             conn.close()
-            
 
-            return JsonResponse({"result":"accepted"})
-
+            return JsonResponse({"result": "accepted"})
 
         elif data["command"] == "reject":
             for id in data["ids"]:
                 element = User_Example.objects.filter(id=id)
                 element.delete()
-                return JsonResponse({"result":"deleted"})
+                return JsonResponse({"result": "deleted"})
 
         else:
             return ""
-            
 
 
 def request_a_model(request):
@@ -84,9 +81,9 @@ def request_a_model(request):
 
 def group1_shard1of1_bin(request):
     my_path = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.join(my_path, "./templates/number_recognition/tfjs_model/group1-shard1of1.bin")
+    path = os.path.join(
+        my_path, "./templates/number_recognition/tfjs_model/group1-shard1of1.bin")
     print(path)
     weights = open(path, 'rb')
     response = FileResponse(weights)
     return response
-
