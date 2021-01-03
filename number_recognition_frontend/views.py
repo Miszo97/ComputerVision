@@ -6,5 +6,4 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def index(request, *args, **kwargs):
-    print('log info')
     return render(request, 'number_recognition_frontend/index.html')
