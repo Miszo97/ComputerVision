@@ -58,7 +58,7 @@ export default class HomePage extends Component {
     });
   }
 
-  MODEL_URL = "http://127.0.0.1:8000/number_recognition/request_a_model";
+  MODEL_URL = "number_recognition/request_a_model";
   async fetchAModel(modelUrl) {
     this.model = await tf.loadLayersModel(modelUrl);
   }
