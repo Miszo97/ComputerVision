@@ -19,13 +19,13 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
   plugins: [
     new webpack.DefinePlugin({
       "process.env": {
         // This has effect on the react lib size
-        NODE_ENV: JSON.stringify("development"),
+        NODE_ENV: JSON.stringify("production"),
       },
     }),
   ],
