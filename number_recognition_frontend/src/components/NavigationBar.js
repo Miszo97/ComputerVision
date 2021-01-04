@@ -50,13 +50,13 @@ export default function NavigationBar(props) {
             </Typography>
           </Button>
         </NavLink>
-        <NavLink style={{ textDecoration: 'none' }}  to="/exampleselection">
+        {/* <NavLink style={{ textDecoration: 'none' }}  to="/exampleselection">
           <Button>
             <Typography variant="h6" className={classes.title}>
               Example Selection
             </Typography>
           </Button>
-        </NavLink>
+        </NavLink> */}
       </Toolbar>
     </AppBar>
   );
