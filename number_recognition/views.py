@@ -1,16 +1,14 @@
 # Create your views here.
 import os
 
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render
-from django.http import FileResponse
 from django.urls import reverse
 import sqlite3
 import pickle
 import pandas as pd
 import numpy as np
 import json
-from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from .serializers import UserExampleSerializer
@@ -22,9 +20,6 @@ DATABASES = ['ComputerVision/DataSet.db', 'DataSet2.db']
 
 @csrf_exempt
 def sendUserExamples(request):
-    """
-List all code snippets, or create a new snippet.
-    """
     if request.method == 'GET':
         userExamples = User_Example.objects.all()
         serializer = UserExampleSerializer(userExamples, many=True)
@@ -75,10 +70,11 @@ def handleExampleSelectionRequest(request):
             return ""
 
 
+@csrf_exempt
 def request_a_model(request):
     return render(request, 'number_recognition/tfjs_model/model.json')
 
-
+@csrf_exempt
 def group1_shard1of1_bin(request):
     my_path = os.path.abspath(os.path.dirname(__file__))
     path = os.path.join(
