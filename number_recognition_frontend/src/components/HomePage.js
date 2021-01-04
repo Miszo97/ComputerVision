@@ -15,7 +15,8 @@ export default class HomePage extends Component {
 
   constructor(props) {
     super(props);
-
+    
+    this.MODEL_URL = "number_recognition/request_a_model";
     this.fetchAModel(this.MODEL_URL);
     this.state = {
       predictedNumber: null,
@@ -58,7 +59,7 @@ export default class HomePage extends Component {
     });
   }
 
-  MODEL_URL = "number_recognition/request_a_model";
+  
   async fetchAModel(modelUrl) {
     this.model = await tf.loadLayersModel(modelUrl);
   }
