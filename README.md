@@ -8,6 +8,8 @@ We can consider the whole project to be composed of two layers.
 - Frontend layer (React application)
 - Backend layer (Django application + machine learning algorithms)
 
+Try it out: http://kol478.pythonanywhere.com/
+
 Preview
 
 [![Alt text](http://i3.ytimg.com/vi/rzdc8fCv1Dw/hqdefault.jpg)](https://www.youtube.com/watch?v=rzdc8fCv1Dw&)
