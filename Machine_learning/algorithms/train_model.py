@@ -18,32 +18,39 @@ y, y_test = split(y, [80])
 
 print(x.shape, y.shape, x_test.shape, y_test.shape)
 
-model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(400, 1)),
-    keras.layers.Dense(128, activation='relu'),
-    keras.layers.Dense(10)
-])
+model = keras.Sequential(
+    [
+        keras.layers.Flatten(input_shape=(400, 1)),
+        keras.layers.Dense(128, activation="relu"),
+        keras.layers.Dense(10),
+    ]
+)
 
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
+model.compile(
+    optimizer="adam",
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=["accuracy"],
+)
 
 model.fit(x, y, epochs=10)
 test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
 
 if save:
-    model.save('model.h5')
+    model.save("model.h5")
 
-print('\nTest accuracy:', test_acc)
+print("\nTest accuracy:", test_acc)
 
-probability_model = tf.keras.Sequential([model,
-                                         tf.keras.layers.Softmax()])
+probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
 
 predictions = probability_model.predict(x_test)
 
 
 def plot_image(i, predictions_array, true_label, img):
-    predictions_array, true_label, img = predictions_array, true_label[i], img[i].reshape(20, 20)
+    predictions_array, true_label, img = (
+        predictions_array,
+        true_label[i],
+        img[i].reshape(20, 20),
+    )
     plt.grid(False)
     plt.xticks([])
     plt.yticks([])
@@ -52,14 +59,16 @@ def plot_image(i, predictions_array, true_label, img):
 
     predicted_label = np.argmax(predictions_array)
     if predicted_label == true_label:
-        color = 'blue'
+        color = "blue"
     else:
-        color = 'red'
+        color = "red"
 
-    plt.xlabel("{} {:2.0f}% ({})".format(predicted_label,
-                                         100 * np.max(predictions_array),
-                                         true_label),
-               color=color)
+    plt.xlabel(
+        "{} {:2.0f}% ({})".format(
+            predicted_label, 100 * np.max(predictions_array), true_label
+        ),
+        color=color,
+    )
 
 
 def plot_value_array(i, predictions_array, true_label):
@@ -71,8 +80,8 @@ def plot_value_array(i, predictions_array, true_label):
     plt.ylim([0, 1])
     predicted_label = np.argmax(predictions_array)
 
-    thisplot[predicted_label].set_color('red')
-    thisplot[int(true_label)].set_color('blue')
+    thisplot[predicted_label].set_color("red")
+    thisplot[int(true_label)].set_color("blue")
 
 
 # Plot the first X test images, their predicted labels, and the true labels.

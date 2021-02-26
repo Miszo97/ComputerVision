@@ -36,82 +36,87 @@ class TestCropMethod(unittest.TestCase):
 
 class TestFirstPixelMethod(unittest.TestCase):
     def test_return_zero_zero_last_last_when_all_elements_are_not_zero(self):
-        ar = np.array(
-            [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]])
+        ar = np.array([[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]])
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), 0)
-        self.assertEqual(first_pixel('left', ar), 0)
-        self.assertEqual(first_pixel('down', ar), row_len - 1)
-        self.assertEqual(first_pixel('right', ar), column_len - 1)
+        self.assertEqual(first_pixel("up", ar), 0)
+        self.assertEqual(first_pixel("left", ar), 0)
+        self.assertEqual(first_pixel("down", ar), row_len - 1)
+        self.assertEqual(first_pixel("right", ar), column_len - 1)
 
     def test_return_one_and_one_before_last_with_frame_of_width_one(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]]
+        )
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), 1)
-        self.assertEqual(first_pixel('left', ar), 1)
-        self.assertEqual(first_pixel('down', ar), row_len - 2)
-        self.assertEqual(first_pixel('right', ar), column_len - 2)
+        self.assertEqual(first_pixel("up", ar), 1)
+        self.assertEqual(first_pixel("left", ar), 1)
+        self.assertEqual(first_pixel("down", ar), row_len - 2)
+        self.assertEqual(first_pixel("right", ar), column_len - 2)
 
     def test_case_three(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [1, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [1, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]]
+        )
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), 1)
-        self.assertEqual(first_pixel('left', ar), 0)
-        self.assertEqual(first_pixel('down', ar), row_len - 2)
-        self.assertEqual(first_pixel('right', ar), column_len - 2)
+        self.assertEqual(first_pixel("up", ar), 1)
+        self.assertEqual(first_pixel("left", ar), 0)
+        self.assertEqual(first_pixel("down", ar), row_len - 2)
+        self.assertEqual(first_pixel("right", ar), column_len - 2)
 
     def test_case_four(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 1], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 1], [0, 0, 0, 0, 0]]
+        )
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), 1)
-        self.assertEqual(first_pixel('left', ar), 1)
-        self.assertEqual(first_pixel('down', ar), row_len - 2)
-        self.assertEqual(first_pixel('right', ar), column_len - 1)
+        self.assertEqual(first_pixel("up", ar), 1)
+        self.assertEqual(first_pixel("left", ar), 1)
+        self.assertEqual(first_pixel("down", ar), row_len - 2)
+        self.assertEqual(first_pixel("right", ar), column_len - 1)
 
     def test_case_five(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]]
+        )
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), 1)
-        self.assertEqual(first_pixel('left', ar), 2)
-        self.assertEqual(first_pixel('down', ar), row_len - 2)
-        self.assertEqual(first_pixel('right', ar), column_len - 3)
+        self.assertEqual(first_pixel("up", ar), 1)
+        self.assertEqual(first_pixel("left", ar), 2)
+        self.assertEqual(first_pixel("down", ar), row_len - 2)
+        self.assertEqual(first_pixel("right", ar), column_len - 3)
 
     def no_pixels_at_all(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+        )
 
         column_len = ar.shape[1]
         row_len = ar.shape[0]
 
-        self.assertEqual(first_pixel('up', ar), -1)
-        self.assertEqual(first_pixel('left', ar), -1)
-        self.assertEqual(first_pixel('down', ar), -1)
-        self.assertEqual(first_pixel('right', ar), -1)
+        self.assertEqual(first_pixel("up", ar), -1)
+        self.assertEqual(first_pixel("left", ar), -1)
+        self.assertEqual(first_pixel("down", ar), -1)
+        self.assertEqual(first_pixel("right", ar), -1)
 
 
 class TestCropMethod(unittest.TestCase):
     def test_case_first(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0]]
+        )
 
         cropped_array = crop(ar)
         expected_array = [[1, 1, 1], [1, 1, 1]]
@@ -119,7 +124,8 @@ class TestCropMethod(unittest.TestCase):
 
     def test_case_second(self):
         ar = np.array(
-            [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
+            [[0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+        )
 
         cropped_array = crop(ar)
         expected_array = [[1, 1, 1, 1, 1]]
@@ -144,5 +150,5 @@ class TestCropMethod(unittest.TestCase):
         self.assertTrue(np.array_equal(cropped_array, expected_array))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

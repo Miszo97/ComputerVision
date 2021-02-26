@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class NumberRecognitionConfig(AppConfig):
-    name = 'number_recognition'
+    name = "number_recognition"

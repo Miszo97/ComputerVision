@@ -26,15 +26,17 @@ def shuffle_data(x, y):
 
 # prepare
 def fetch_data_set(percent=100):
-    connection = sqlite3.connect('/Users/artur/Documents/Computer_Vision/ComputerVision/DataSet.db')
-    db = pd.read_sql_query('select * from DataSet', connection)
+    connection = sqlite3.connect(
+        "/Users/artur/Documents/Computer_Vision/ComputerVision/DataSet.db"
+    )
+    db = pd.read_sql_query("select * from DataSet", connection)
     db_len = len(db)
     examples_number_to_return = int((percent * 1 / 100) * db_len)
     db = db[:examples_number_to_return]
     m = len(db)
-    x = np.array([pickle.loads(ex) for ex in db['data']])
+    x = np.array([pickle.loads(ex) for ex in db["data"]])
     x = x.reshape(m, 400)
-    y = np.array(db['label']).reshape(m, 1)
+    y = np.array(db["label"]).reshape(m, 1)
 
     return x, y, m
 
@@ -57,7 +59,7 @@ def saveThetaParameters(file, theta1, theta2):
 
 def loadThetaParameters(file):
     theta_parameters = np.load(file)
-    return theta_parameters['theta1'], theta_parameters['theta2']
+    return theta_parameters["theta1"], theta_parameters["theta2"]
 
 
 def get_accuracy(predicted, actual):
@@ -80,7 +82,7 @@ def convertImage(e):
     """
 
     image_b64 = e
-    imgstr = re.search(r'base64,(.*)', image_b64).group(1)
+    imgstr = re.search(r"base64,(.*)", image_b64).group(1)
     image_bytes = io.BytesIO(base64.b64decode(imgstr))
     im = Image.open(image_bytes)
     arr = np.array(im)[:, :, 0]
@@ -96,29 +98,33 @@ def convertImage(e):
 
 
 def first_pixel(o, ar):
-    if o is 'up':
+    if o is "up":
         for i in range(ar.shape[0]):
-            if np.where(ar[i, 0:] != 0)[0].size: return i
-    if o is 'down':
+            if np.where(ar[i, 0:] != 0)[0].size:
+                return i
+    if o is "down":
         for i in range(ar.shape[0]):
-            if np.where(ar[-1 - i, 0:] != 0)[0].size: return ar.shape[0] - 1 - i
-    if o is 'left':
+            if np.where(ar[-1 - i, 0:] != 0)[0].size:
+                return ar.shape[0] - 1 - i
+    if o is "left":
         for i in range(ar.shape[1]):
-            if np.where(ar[0:, i] != 0)[0].size: return i
-    if o is 'right':
+            if np.where(ar[0:, i] != 0)[0].size:
+                return i
+    if o is "right":
         for i in range(ar.shape[1]):
-            if np.where(ar[0:, -1 - i] != 0)[0].size: return ar.shape[1] - 1 - i
+            if np.where(ar[0:, -1 - i] != 0)[0].size:
+                return ar.shape[1] - 1 - i
 
     # if it didn't find the first occurence of a pixel or the orientation wasn't correctly specified
     return -1
 
 
 def crop(ar):
-    left_border = first_pixel('left', ar)
-    right_border = first_pixel('right', ar)
-    top_border = first_pixel('up', ar)
-    bottom_border = first_pixel('down', ar)
+    left_border = first_pixel("left", ar)
+    right_border = first_pixel("right", ar)
+    top_border = first_pixel("up", ar)
+    bottom_border = first_pixel("down", ar)
 
-    cropped_array = ar[top_border:bottom_border + 1, left_border:right_border + 1]
+    cropped_array = ar[top_border : bottom_border + 1, left_border : right_border + 1]
 
     return cropped_array
