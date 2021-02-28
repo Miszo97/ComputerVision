@@ -6,7 +6,7 @@ import pandas as pd
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from Machine_learning.algorithms.helpers import convertImage
+from Machine_learning.algorithms.helpers import convert_image
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.views import APIView
@@ -42,7 +42,7 @@ class ModelExamples(APIView):
             e = user_example.first()
 
             # Convert image to to the format the classifier is expecting.
-            norm_image = convertImage(e.drawing_base64)
+            norm_image = convert_image(e.drawing_base64)
 
             # Save the example in a table format ready to be stored in a database.
             df = pd.DataFrame(

@@ -53,11 +53,11 @@ def split(a, l):
     return splited
 
 
-def saveThetaParameters(file, theta1, theta2):
+def save_theta_parameters(file, theta1, theta2):
     np.savez(file, theta1=theta1, theta2=theta2)
 
 
-def loadThetaParameters(file):
+def load_theta_parameters(file):
     theta_parameters = np.load(file)
     return theta_parameters["theta1"], theta_parameters["theta2"]
 
@@ -75,7 +75,7 @@ def get_accuracy(predicted, actual):
         return 100 * matches / len(actual)
 
 
-def convertImage(e):
+def convert_image(e):
     """
     Convert an image to to the format the classifier is expecting.
     Specifically 20x20 matrix with values in range 0 to 1.
