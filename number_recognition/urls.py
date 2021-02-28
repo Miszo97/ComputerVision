@@ -1,19 +1,19 @@
 from django.urls import path
 
-from .views import ListUsersExamples, ExampleSelectionRequest
+from .views import ListUsersExamples, ModelExamples
 from . import views
 
 app_name = "number_recognition"
 
 urlpatterns = [
-    path("userexamples", ListUsersExamples.as_view(), name="UserExamples"),
+    path("user-examples", ListUsersExamples.as_view(), name="user_examples"),
     path(
-        "exampleselectionrequest",
-        ExampleSelectionRequest.as_view(),
-        name="handle_example_selection_request",
+        "model-examples",
+        ModelExamples.as_view(),
+        name="model_examples",
     ),
-    path("request_a_model", views.request_a_model, name="request_a_model"),
+    path("model", views.model, name="model"),
     path(
-        "group1-shard1of1.bin", views.group1_shard1of1_bin, name="group1-shard1of1.bin"
+        "weights", views.weights, name="weights"
     ),
 ]

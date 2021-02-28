@@ -31,7 +31,7 @@ class ListUsersExamples(APIView):
         return JsonResponse(serializer.errors, status=400)
 
 
-class ExampleSelectionRequest(APIView):
+class ModelExamples(APIView):
     def post(self, request):
         data = JSONParser().parse(request)
 
@@ -71,17 +71,16 @@ class ExampleSelectionRequest(APIView):
 
 
 @csrf_exempt
-def request_a_model(request):
+def model(request):
     return render(request, "number_recognition/tfjs_model/model.json")
 
 
 @csrf_exempt
-def group1_shard1of1_bin(request):
-    my_path = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.join(
-        my_path, "./templates/number_recognition/tfjs_model/group1-shard1of1.bin"
+def weights(request):
+    cwd_path = os.path.abspath(os.path.dirname(__file__))
+    model_path = os.path.join(
+        cwd_path, "./templates/number_recognition/tfjs_model/group1-shard1of1.bin"
     )
-    print(path)
-    weights = open(path, "rb")
-    response = FileResponse(weights)
+    model_weights = open(model_path, "rb")
+    response = FileResponse(model_weights)
     return response
