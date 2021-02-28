@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from Machine_learning.algorithms.helpers import convertImage
 from rest_framework.parsers import JSONParser
+from rest_framework import status
 from rest_framework.views import APIView
 
 from .models import UserExample
@@ -32,42 +33,39 @@ class ListUsersExamples(APIView):
 
 
 class ModelExamples(APIView):
+    # Model examples gets from selected user examples
     def post(self, request):
         data = JSONParser().parse(request)
+        conn = sqlite3.connect(DATABASES[0])
+        for id in data["ids"]:
+            user_example = UserExample.objects.filter(id=id)
+            e = user_example.first()
 
-        if data["command"] == "accept":
-            conn = sqlite3.connect(DATABASES[0])
-            for id in data["ids"]:
-                elements = UserExample.objects.filter(id=id)
-                e = elements.first()
+            # Convert image to to the format the classifier is expecting.
+            norm_image = convertImage(e.drawing_base64)
 
-                # Convert image to to the format the classifier is expecting.
-                norm_image = convertImage(e.drawing_base64)
+            # Save the example in a table format ready to be stored in a database.
+            df = pd.DataFrame(
+                {
+                    "data": [pickle.dumps(norm_image)],
+                    "label": [e.label],
+                    "base_64": [e.drawing_base64],
+                }
+            )
 
-                # Save the example in a table format ready to be stored in a database.
-                df = pd.DataFrame(
-                    {
-                        "data": [pickle.dumps(norm_image)],
-                        "label": [e.label],
-                        "base_64": [e.drawing_base64],
-                    }
-                )
+            df.to_sql("DataSet", conn, if_exists="append", index=False)
+            user_example.delete()
 
-                df.to_sql("DataSet", conn, if_exists="append", index=False)
-                elements.delete()
+        conn.close()
 
-            conn.close()
+        return JsonResponse(data["ids"], status=status.HTTP_201_CREATED)
 
-            return JsonResponse({"result": "accepted"})
-
-        elif data["command"] == "reject":
-            for id in data["ids"]:
-                element = UserExample.objects.filter(id=id)
-                element.delete()
-                return JsonResponse({"result": "deleted"})
-
-        else:
-            return ""
+    def delete(self, request):
+        data = JSONParser().parse(request)
+        for id in data["ids"]:
+            element = UserExample.objects.filter(id=id)
+            element.delete()
+            return JsonResponse({"result": "deleted"})
 
 
 @csrf_exempt
