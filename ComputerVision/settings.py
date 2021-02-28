@@ -34,9 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    # 'number_recognition_frontend.apps.NumberRecognitionFrontendConfig',
     "number_recognition_frontend"
-    # 'number_recognition_frontend.apps.Number_recognition_frontendConfig',
 ]
 
 MIDDLEWARE = [
