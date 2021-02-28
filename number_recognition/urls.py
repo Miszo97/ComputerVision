@@ -1,15 +1,16 @@
 from django.urls import path
 
+from .views import ListUsersExamples, ExampleSelectionRequest
 from . import views
 
 app_name = "number_recognition"
 
 urlpatterns = [
-    path("senduserexamples", views.sendUserExamples, name="sendUserExamples"),
+    path("userexamples", ListUsersExamples.as_view(), name="UserExamples"),
     path(
-        "handleexampleselectionrequest",
-        views.handleExampleSelectionRequest,
-        name="handleexampleselectionrequest",
+        "exampleselectionrequest",
+        ExampleSelectionRequest.as_view(),
+        name="handle_example_selection_request",
     ),
     path("request_a_model", views.request_a_model, name="request_a_model"),
     path(

@@ -8,21 +8,21 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from Machine_learning.algorithms.helpers import convertImage
 from rest_framework.parsers import JSONParser
+from rest_framework.views import APIView
 
-from .models import User_Example
+from .models import UserExample
 from .serializers import UserExampleSerializer
 
 DATABASES = ["ComputerVision/DataSet.db", "DataSet2.db"]
 
 
-@csrf_exempt
-def sendUserExamples(request):
-    if request.method == "GET":
-        userExamples = User_Example.objects.all()
+class ListUsersExamples(APIView):
+    def get(self, request):
+        userExamples = UserExample.objects.all()
         serializer = UserExampleSerializer(userExamples, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == "POST":
+    def post(self, request):
         data = JSONParser().parse(request)
         serializer = UserExampleSerializer(data=data, many=True)
         if serializer.is_valid():
@@ -31,16 +31,14 @@ def sendUserExamples(request):
         return JsonResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
-def handleExampleSelectionRequest(request):
-    if request.method == "POST":
+class ExampleSelectionRequest(APIView):
+    def post(self, request):
         data = JSONParser().parse(request)
 
-        # TODO Needs optimation
         if data["command"] == "accept":
             conn = sqlite3.connect(DATABASES[0])
             for id in data["ids"]:
-                elements = User_Example.objects.filter(id=id)
+                elements = UserExample.objects.filter(id=id)
                 e = elements.first()
 
                 # Convert image to to the format the classifier is expecting.
@@ -64,7 +62,7 @@ def handleExampleSelectionRequest(request):
 
         elif data["command"] == "reject":
             for id in data["ids"]:
-                element = User_Example.objects.filter(id=id)
+                element = UserExample.objects.filter(id=id)
                 element.delete()
                 return JsonResponse({"result": "deleted"})
 

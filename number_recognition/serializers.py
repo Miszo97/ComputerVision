@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import User_Example
+from .models import UserExample
 
 
 class UserExampleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_Example
+        model = UserExample
         fields = ("id", "drawing_base64", "label")
