@@ -70,7 +70,7 @@ class ModelExamples(APIView):
 
 @csrf_exempt
 def model(request):
-    return render(request, "number_recognition/tfjs_model/model.json")
+    return render(request, "number_recognition/tfjs_model/model.json", mimetype='application/json')
 
 
 @csrf_exempt
