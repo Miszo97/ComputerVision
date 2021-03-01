@@ -1,9 +1,11 @@
 from django.db import models
 
 
-# Create your models here.
-
-
 class UserExample(models.Model):
     drawing_base64 = models.TextField()
-    label = models.IntegerField(default=0)
+    label = models.IntegerField()
+
+class ModelExample(models.Model):
+    drawing_base64 = models.TextField()
+    label = models.IntegerField()
+    converted_image = models.TextField()
