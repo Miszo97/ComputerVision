@@ -5,3 +5,4 @@ django-extensions
 tensorflowjs
 django-on-heroku
 gunicorn
+Pillow
