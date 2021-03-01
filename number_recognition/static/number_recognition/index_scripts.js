@@ -3,7 +3,7 @@ let myBarChart;
 let AUTO_PREDICTING = true;
 let canvasDrawer;
 
-const MODEL_URL = 'http://127.0.0.1:8000/number_recognition/request_a_model';
+const MODEL_URL = 'http://127.0.0.1:8000/number_recognition/model';
 
 function sendUserDrewImage() {
     let canvas = document.getElementById('canvas');

@@ -14,6 +14,6 @@ urlpatterns = [
     ),
     path("model", views.model, name="model"),
     path(
-        "weights", views.weights, name="weights"
+        "group1-shard1of1.bin", views.weights, name="weights"
     ),
 ]

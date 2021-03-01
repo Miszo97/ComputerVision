@@ -8,7 +8,7 @@ export default class ExampleSelectionPage extends Component {
     super(props);
 
     this.state = { userExamples: [] };
-    this.fetchAllUserExamples("number_recognition/senduserexamples");
+    this.fetchAllUserExamples("number_recognition/user-examples");
   }
 
   deleteUserExample(id) {
@@ -31,7 +31,7 @@ export default class ExampleSelectionPage extends Component {
       body: JSON.stringify(body),
     };
 
-    fetch("number_recognition/handleexampleselectionrequest", requestOptions)
+    fetch("number_recognition/model-examples", requestOptions)
       .then((response) => response.json())
       .then((data) => console.log(data));
 
@@ -50,7 +50,7 @@ export default class ExampleSelectionPage extends Component {
       body: JSON.stringify(body),
     };
 
-    fetch("number_recognition/handleexampleselectionrequest", requestOptions)
+    fetch("number_recognition/model-examples", requestOptions)
       .then((response) => response.json())
       .then((data) => console.log(data));
 

@@ -12,7 +12,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from .models import UserExample
-from .serializers import UserExampleSerializer
+from .serializers import UserExampleSerializer, ModelExampleSerializer
 
 DATABASES = ["ComputerVision/DataSet.db", "DataSet2.db"]
 
@@ -36,29 +36,24 @@ class ModelExamples(APIView):
     # Model examples gets from selected user examples
     def post(self, request):
         data = JSONParser().parse(request)
-        conn = sqlite3.connect(DATABASES[0])
-        for id in data["ids"]:
-            user_example = UserExample.objects.filter(id=id)
-            e = user_example.first()
 
-            # Convert image to to the format the classifier is expecting.
-            norm_image = convert_image(e.drawing_base64)
+        selected_user_examples = UserExample.objects.filter(id__in=data['ids'])
+        serializer = UserExampleSerializer(selected_user_examples, many=True)
+        d = serializer.data
+        
+        # Convert image to to the format the classifier is expecting.
+        for u in d:
+            u['converted_image'] = convert_image(u.drawing_base64)
 
-            # Save the example in a table format ready to be stored in a database.
-            df = pd.DataFrame(
-                {
-                    "data": [pickle.dumps(norm_image)],
-                    "label": [e.label],
-                    "base_64": [e.drawing_base64],
-                }
-            )
+        data = JSONParser().parse(d)
+        serializer = ModelExampleSerializer(data=data, many=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            selected_user_examples.delete()
+            return JsonResponse(serializer.data, status=201, safe=False)
 
-            df.to_sql("DataSet", conn, if_exists="append", index=False)
-            user_example.delete()
-
-        conn.close()
-
-        return JsonResponse(data["ids"], status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=400)
 
     def delete(self, request):
         data = JSONParser().parse(request)

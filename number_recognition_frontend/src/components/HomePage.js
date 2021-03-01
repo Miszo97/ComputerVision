@@ -16,7 +16,7 @@ export default class HomePage extends Component {
   constructor(props) {
     super(props);
     
-    this.MODEL_URL = "number_recognition/request_a_model";
+    this.MODEL_URL = "number_recognition/model";
     this.fetchAModel(this.MODEL_URL);
     this.state = {
       predictedNumber: null,

@@ -125,7 +125,7 @@ export default class FeedModelPage extends Component {
             onClick={() => {
               this.sendUserExamples(
                 this.state.userExamples,
-                "number_recognition/senduserexamples"
+                "number_recognition/user-examples"
               );
             }}
           >
