@@ -98,19 +98,19 @@ def convert_image(e):
 
 
 def first_pixel(o, ar):
-    if o is "up":
+    if o == "up":
         for i in range(ar.shape[0]):
             if np.where(ar[i, 0:] != 0)[0].size:
                 return i
-    if o is "down":
+    if o == "down":
         for i in range(ar.shape[0]):
             if np.where(ar[-1 - i, 0:] != 0)[0].size:
                 return ar.shape[0] - 1 - i
-    if o is "left":
+    if o == "left":
         for i in range(ar.shape[1]):
             if np.where(ar[0:, i] != 0)[0].size:
                 return i
-    if o is "right":
+    if o == "right":
         for i in range(ar.shape[1]):
             if np.where(ar[0:, -1 - i] != 0)[0].size:
                 return ar.shape[1] - 1 - i
