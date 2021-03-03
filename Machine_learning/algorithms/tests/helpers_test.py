@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 from exceptions import DifferentLenghtError, ZeroElementsListError
-from helpers import *
+from helpers import crop, get_accuracy, first_pixel
 
 
 class TestGetAccuracyMethod(unittest.TestCase):
@@ -27,11 +27,6 @@ class TestGetAccuracyMethod(unittest.TestCase):
         second = []
         with self.assertRaises(ZeroElementsListError):
             get_accuracy(first, second)
-
-
-class TestCropMethod(unittest.TestCase):
-    def test_return_proper_cropped_array(self):
-        pass
 
 
 class TestFirstPixelMethod(unittest.TestCase):
@@ -102,9 +97,6 @@ class TestFirstPixelMethod(unittest.TestCase):
         ar = np.array(
             [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
         )
-
-        column_len = ar.shape[1]
-        row_len = ar.shape[0]
 
         self.assertEqual(first_pixel("up", ar), -1)
         self.assertEqual(first_pixel("left", ar), -1)

@@ -1,16 +1,12 @@
-import pickle
-import io
-import re
 import base64
+import io
+import pickle
+import re
 import sqlite3
 
-from PIL import Image
 import numpy as np
 import pandas as pd
-
-import io
-import re
-import base64
+from PIL import Image
 
 from .exceptions import DifferentLenghtError, ZeroElementsListError
 
@@ -24,7 +20,6 @@ def shuffle_data(x, y):
     return x, y
 
 
-# prepare
 def fetch_data_set(percent=100):
     connection = sqlite3.connect(
         "/Users/artur/Documents/Computer_Vision/ComputerVision/DataSet.db"
@@ -125,6 +120,6 @@ def crop(ar):
     top_border = first_pixel("up", ar)
     bottom_border = first_pixel("down", ar)
 
-    cropped_array = ar[top_border : bottom_border + 1, left_border : right_border + 1]
+    cropped_array = ar[top_border: bottom_border + 1, left_border:  right_border + 1]
 
     return cropped_array
