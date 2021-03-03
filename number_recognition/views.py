@@ -1,14 +1,10 @@
 import os
-import pickle
-import sqlite3
 
-import pandas as pd
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from Machine_learning.algorithms.helpers import convert_image
 from rest_framework.parsers import JSONParser
-from rest_framework import status
 from rest_framework.views import APIView
 
 from .models import UserExample
@@ -19,8 +15,8 @@ DATABASES = ["ComputerVision/DataSet.db", "DataSet2.db"]
 
 class ListUsersExamples(APIView):
     def get(self, request):
-        userExamples = UserExample.objects.all()
-        serializer = UserExampleSerializer(userExamples, many=True)
+        user_examples = UserExample.objects.all()
+        serializer = UserExampleSerializer(user_examples, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     def post(self, request):
@@ -40,14 +36,14 @@ class ModelExamples(APIView):
         selected_user_examples = UserExample.objects.filter(id__in=data['ids'])
         serializer = UserExampleSerializer(selected_user_examples, many=True)
         d = serializer.data
-        
+
         # Convert image to to the format the classifier is expecting.
         for u in d:
             u['converted_image'] = convert_image(u.drawing_base64)
 
         data = JSONParser().parse(d)
         serializer = ModelExampleSerializer(data=data, many=True)
-        
+
         if serializer.is_valid():
             serializer.save()
             selected_user_examples.delete()
