@@ -1,8 +1,8 @@
 # ComputerVision
 Neural network application for image classification. 
 
-The idea is to use web application to let users draw digital numbers which can be later 
-recognized by a neural network. The outcome is then returned to a user.
+The idea is to use a web application to let users draw digital numbers which can be later 
+recognized by a neural network. The outcome is then returned to the user.
 
 <p align="center">
 <img src="https://media.giphy.com/media/xVGNVwSllbYir6Md7J/giphy.gif">
